@@ -29,6 +29,11 @@
     "tester": "Tester",
     "user": "Người dùng"
   },
-  "coming_soon_title": "Màn hình này đang được xây dựng",
-  "coming_soon_body": "Phần dữ liệu ticket sẽ được nối trong giai đoạn kế tiếp."
+  "saving": "Đang lưu…",
+  "pagination": {
+    "label": "Phân trang",
+    "summary": "Trang {{page}}/{{totalPages}} · {{total}} ticket",
+    "prev": "Trước",
+    "next": "Sau"
+  }
 }

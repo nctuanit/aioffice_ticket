@@ -1,37 +1,36 @@
-import { Link, useParams } from "@tanstack/react-router"
-import { ArrowLeft, Construction } from "lucide-react"
+import { Link, useParams, useRouter } from "@tanstack/react-router"
+import { ArrowLeft } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
-import { EmptyState } from "@/shared/components/EmptyState"
-import { PageHeader } from "@/shared/components/PageHeader"
+import { TicketDetailView } from "@/features/tickets/components/detail/TicketDetailView"
 
-/** Detail placeholder (phase P5): conversation, reply box and side panel arrive in P6. */
+/** Full-page ticket detail: conversation and composer on the left, handling panel on the right. */
 const TicketDetailPage = () => {
-  const { t } = useTranslation("tickets")
   const { t: tCommon } = useTranslation("common")
+  const router = useRouter()
   // the pathless "hub" layout route prefixes the route id
   const { ticketId } = useParams({ from: "/hub/tickets/$ticketId" })
+  const canGoBack = router.history.length > 1
 
   return (
     <>
-      <PageHeader
-        title={t("detail.title")}
-        description={ticketId}
-        actions={
-          <Button asChild variant="outline" size="sm">
+      <div>
+        {canGoBack ? (
+          <Button variant="ghost" size="sm" onClick={() => router.history.back()}>
+            <ArrowLeft aria-hidden="true" />
+            {tCommon("back")}
+          </Button>
+        ) : (
+          <Button asChild variant="ghost" size="sm">
             <Link to="/tickets">
               <ArrowLeft aria-hidden="true" />
               {tCommon("back")}
             </Link>
           </Button>
-        }
-      />
-      <EmptyState
-        icon={Construction}
-        title={tCommon("coming_soon_title")}
-        description={tCommon("coming_soon_body")}
-      />
+        )}
+      </div>
+      <TicketDetailView ticketId={ticketId} />
     </>
   )
 }

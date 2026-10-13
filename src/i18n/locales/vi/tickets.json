@@ -1,21 +1,190 @@
 {
   "queue": {
     "title": "Hàng đợi ticket",
+    "title_mine": "Ticket của tôi",
+    "title_closed": "Ticket đã đóng",
     "subtitle": "Ticket chưa có người xử lý sẽ hết hạn sau 48 giờ làm việc.",
     "empty_title": "Chưa có ticket nào",
-    "empty_body": "Khi khách gửi yêu cầu hỗ trợ, ticket sẽ xuất hiện ở đây."
+    "empty_body": "Khi khách gửi yêu cầu hỗ trợ, ticket sẽ xuất hiện ở đây.",
+    "no_match_title": "Không có ticket khớp bộ lọc",
+    "no_match_body": "Thử bỏ bớt bộ lọc hoặc đổi từ khóa tìm kiếm.",
+    "unassigned": "Chưa phân công",
+    "customer_replied": "Khách vừa trả lời"
+  },
+  "view": {
+    "label": "Chế độ xem",
+    "list": "Danh sách",
+    "board": "Kanban"
+  },
+  "filters": {
+    "search_label": "Tìm ticket",
+    "search_placeholder": "Tìm theo mã ticket hoặc tiêu đề…",
+    "status": "Trạng thái",
+    "all_statuses": "Mọi trạng thái",
+    "assignee": "Người xử lý",
+    "all_assignees": "Mọi người xử lý",
+    "assignee_me": "Của tôi",
+    "assignee_none": "Chưa ai nhận",
+    "module": "Ứng dụng",
+    "all_modules": "Mọi ứng dụng",
+    "category": "Danh mục",
+    "all_categories": "Mọi danh mục",
+    "priority": "Ưu tiên",
+    "all_priorities": "Mọi mức ưu tiên",
+    "source": "Nguồn",
+    "all_sources": "Mọi nguồn",
+    "clear": "Xóa bộ lọc"
+  },
+  "board": {
+    "subtitle": "Kéo thẻ sang cột khác để đổi trạng thái. Chỉ những cột hợp lệ mới nhận thẻ.",
+    "label": "Bảng Kanban ticket",
+    "card_role": "thẻ ticket kéo được",
+    "open_ticket": "Mở ticket {{number}}: {{subject}}",
+    "move_menu": "Chuyển trạng thái ticket {{number}}",
+    "move_to": "Chuyển sang",
+    "closed_window": "Đóng trong {{count}} ngày qua.",
+    "see_all": "Xem tất cả",
+    "drop_here": "Thả vào đây",
+    "empty_column": "Không có ticket",
+    "moved": "{{number}} đã chuyển sang {{status}}",
+    "move_conflict": "{{number}} vừa được người khác cập nhật. Bảng đã tải lại trạng thái mới nhất.",
+    "move_not_allowed": "Không thể chuyển từ \"{{from}}\" sang \"{{to}}\".",
+    "confirm_title": "Chuyển sang \"{{status}}\"?",
+    "confirm_body_resolve": "Ticket {{number}} — {{subject}}. Khách sẽ thấy trạng thái mới trong ứng dụng.",
+    "confirm_body_cancel": "Ticket {{number}} — {{subject}} sẽ bị hủy và không thể xử lý tiếp.",
+    "confirm_message_label": "Lời nhắn cho khách (không bắt buộc)",
+    "confirm_message_placeholder": "Ví dụ: Bên em đã khắc phục lỗi, anh/chị cập nhật ứng dụng giúp em nhé.",
+    "confirm_message_hint": "Lời nhắn được gửi như một phản hồi công khai trước khi đổi trạng thái.",
+    "confirm_action": "Chuyển sang {{status}}",
+    "a11y": {
+      "instructions": "Kéo thẻ bằng chuột hoặc cảm ứng. Dùng bàn phím: Tab tới nút ⋯ trên thẻ rồi chọn trạng thái muốn chuyển.",
+      "picked": "Đã nhấc ticket {{number}}.",
+      "over": "Ticket {{number}} đang ở trên cột {{status}}.",
+      "outside": "Ticket {{number}} không ở trên cột nào.",
+      "dropped": "Đã thả ticket {{number}} vào cột {{status}}.",
+      "cancelled": "Đã hủy kéo ticket {{number}}."
+    }
   },
   "detail": {
     "title": "Chi tiết ticket",
-    "not_found": "Không tìm thấy ticket này."
+    "sheet_description": "Hội thoại, thao tác xử lý và lịch sử của ticket.",
+    "not_found": "Không tìm thấy ticket này.",
+    "not_found_body": "Ticket có thể đã bị xóa sau thời hạn lưu trữ.",
+    "open_full": "Mở trang đầy đủ",
+    "conversation": "Hội thoại",
+    "internal_note": "Ghi chú nội bộ",
+    "author_customer": "Khách hàng",
+    "author_staff": "Nhân viên hỗ trợ",
+    "actions": "Xử lý ticket",
+    "claim": "Nhận xử lý",
+    "release": "Bỏ nhận",
+    "move_to_status": "→ {{status}}",
+    "you": "bạn",
+    "info": "Thông tin ticket",
+    "history": "Lịch sử thay đổi"
+  },
+  "composer": {
+    "label": "Soạn phản hồi",
+    "mode": "Loại tin nhắn",
+    "reply": "Trả lời khách",
+    "note": "Ghi chú nội bộ",
+    "reply_placeholder": "Nhập nội dung trả lời khách…",
+    "note_placeholder": "Ghi chú chỉ đội hỗ trợ nhìn thấy…",
+    "reply_hint": "Khách sẽ thấy tin nhắn này. Ctrl + Enter để gửi.",
+    "note_hint": "Khách KHÔNG thấy ghi chú này. Ctrl + Enter để lưu.",
+    "send_reply": "Gửi trả lời",
+    "save_note": "Lưu ghi chú",
+    "sending": "Đang gửi…",
+    "locked": "Ticket ở trạng thái \"{{status}}\" nên không thể gửi thêm tin nhắn."
+  },
+  "toast": {
+    "claimed": "Bạn đã nhận ticket {{number}}",
+    "status_changed": "Đã chuyển sang {{status}}",
+    "assigned": "Đã phân công ticket",
+    "unassigned": "Đã bỏ phân công",
+    "priority_changed": "Đã đổi ưu tiên thành {{priority}}",
+    "reply_sent": "Đã gửi trả lời cho khách",
+    "note_added": "Đã lưu ghi chú nội bộ"
+  },
+  "history": {
+    "created": "Khách tạo ticket",
+    "status": "Trạng thái: {{from}} → {{to}}",
+    "priority": "Ưu tiên: {{from}} → {{to}}",
+    "assignee": "Phân công cho {{name}}",
+    "handled": "Bắt đầu xử lý — tắt hạn 48 giờ",
+    "expired": "Hết hạn vì chưa ai xử lý trong 48 giờ làm việc",
+    "system": "Hệ thống",
+    "someone": "Một nhân viên"
+  },
+  "expiry": {
+    "hours_left_other": "Còn {{count}} giờ",
+    "minutes_left_other": "Còn {{count}} phút",
+    "overdue": "Quá hạn",
+    "tooltip": "Thời gian làm việc còn lại trước khi ticket tự hết hạn"
+  },
+  "fields": {
+    "subject": "Ticket",
+    "status": "Trạng thái",
+    "priority": "Ưu tiên",
+    "priority_value": "Ưu tiên: {{value}}",
+    "assignee": "Người xử lý",
+    "updated": "Cập nhật",
+    "requester": "Khách hàng",
+    "workspace": "Workspace",
+    "source": "Nguồn",
+    "category": "Danh mục",
+    "module": "Ứng dụng",
+    "created": "Tạo lúc",
+    "deadline": "Hạn tiếp nhận",
+    "first_handled": "Bắt đầu xử lý",
+    "resolved": "Giải quyết lúc",
+    "closed": "Đóng lúc",
+    "expired": "Hết hạn lúc"
   },
   "dashboard": {
     "title": "Tổng quan",
-    "subtitle": "Tình trạng hàng đợi hỗ trợ hôm nay."
+    "subtitle": "Tình trạng hàng đợi hỗ trợ, tự cập nhật mỗi 30 giây.",
+    "tiles": {
+      "open": "Ticket mới",
+      "unassigned": "Chưa ai nhận",
+      "expiring": "Sắp hết hạn (≤ 6 giờ)",
+      "waiting_user": "Chờ khách",
+      "expired": "Hết hạn 7 ngày qua"
+    },
+    "by_status": "Theo trạng thái",
+    "by_module": "Theo ứng dụng",
+    "no_data": "Chưa có dữ liệu.",
+    "expiring_title": "Sắp hết hạn tiếp nhận",
+    "expiring_empty": "Không có ticket nào đang chờ người nhận.",
+    "see_queue": "Xem hàng đợi"
   },
   "calendar": {
     "title": "Lịch làm việc",
-    "subtitle": "Ngày làm việc và ngày lễ dùng để tính hạn 48 giờ."
+    "subtitle": "Ngày làm việc và ngày lễ dùng để tính hạn 48 giờ.",
+    "weekdays_title": "Ngày làm việc trong tuần",
+    "weekdays_body": "Đồng hồ 48 giờ chỉ chạy trong các ngày được chọn, theo giờ Việt Nam.",
+    "weekdays_required": "Phải chọn ít nhất một ngày làm việc.",
+    "weekday": {
+      "0": "CN",
+      "1": "T2",
+      "2": "T3",
+      "3": "T4",
+      "4": "T5",
+      "5": "T6",
+      "6": "T7"
+    },
+    "recompute_note": "Khi lưu, hạn của các ticket chưa ai nhận sẽ được tính lại.",
+    "saved": "Đã lưu lịch làm việc",
+    "holidays_title": "Ngày nghỉ lễ",
+    "holidays_body": "Đồng hồ 48 giờ dừng trong những ngày này.",
+    "holiday_date": "Ngày",
+    "holiday_name": "Tên ngày lễ",
+    "holiday_name_placeholder": "Ví dụ: Quốc khánh",
+    "holiday_add": "Thêm ngày lễ",
+    "holiday_added": "Đã thêm ngày lễ",
+    "holiday_removed": "Đã xóa ngày lễ",
+    "holiday_remove": "Xóa ngày lễ {{name}}",
+    "holidays_empty": "Chưa có ngày lễ nào."
   },
   "status": {
     "OPEN": "Mới",
@@ -41,6 +210,17 @@
     "AI_CREDIT": "Quỹ AI",
     "FEATURE_REQUEST": "Đề xuất tính năng",
     "OTHER": "Khác"
+  },
+  "module": {
+    "WRITER": "Writer",
+    "SENS": "Sens",
+    "MEET": "Meet",
+    "NOTE": "Note",
+    "ART": "Art",
+    "MAIL": "Mail",
+    "SLIDE": "Slide",
+    "SHEET": "Sheet",
+    "WEB_ADMIN": "Web admin"
   },
   "source": {
     "APP": "Ứng dụng",

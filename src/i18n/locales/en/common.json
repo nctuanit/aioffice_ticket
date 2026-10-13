@@ -29,6 +29,11 @@
     "tester": "Tester",
     "user": "User"
   },
-  "coming_soon_title": "This screen is under construction",
-  "coming_soon_body": "Ticket data will be wired in the next phase."
+  "saving": "Saving…",
+  "pagination": {
+    "label": "Pagination",
+    "summary": "Page {{page}} of {{totalPages}} · {{total}} tickets",
+    "prev": "Previous",
+    "next": "Next"
+  }
 }

@@ -6,8 +6,6 @@ import {
   Outlet,
   redirect,
 } from "@tanstack/react-router"
-import { z } from "zod"
-
 import { RootLayout } from "@/app/RootLayout"
 import {
   HOME_PATH,
@@ -15,7 +13,7 @@ import {
   requireGuestSession,
   requireStaffSession,
 } from "@/features/auth/utils/route-guards"
-import { TICKET_STATUSES } from "@/features/tickets/constants/ticket.constants"
+import { ticketListSearchSchema, type TicketListSearch } from "@/features/tickets/types/ticket-search"
 import { AuthLayout, HubShellLayout } from "@/layouts"
 import { AppLoadingScreen } from "@/shared/components/AppLoadingScreen"
 import { NotFoundPage } from "@/shared/components/NotFoundPage"
@@ -91,14 +89,6 @@ const dashboardRoute = createRoute({
   component: lazyRouteComponent(() => import("@/features/tickets"), "DashboardPage"),
 })
 
-/** Queue filters live in the URL so a filtered view can be shared and survives reloads. */
-const ticketListSearchSchema = z.object({
-  status: z.enum(TICKET_STATUSES).optional(),
-  assignee: z.enum(["me", "none"]).optional(),
-  q: z.string().trim().min(1).optional(),
-  page: z.number().int().min(1).optional(),
-})
-
 const ticketsRoute = createRoute({
   getParentRoute: () => hubRoute,
   path: "/tickets",
@@ -140,8 +130,6 @@ declare module "@tanstack/react-router" {
     router: typeof router
   }
 }
-
-type TicketListSearch = z.infer<typeof ticketListSearchSchema>
 
 export { router, ticketListSearchSchema }
 export type { TicketListSearch }
