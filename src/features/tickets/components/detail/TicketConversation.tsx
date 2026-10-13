@@ -2,9 +2,10 @@ import { Lock } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
 import { Skeleton } from "@/components/ui/skeleton"
+import { TicketAttachments } from "@/features/tickets/components/detail/TicketAttachments"
 import { RelativeTime, UserAvatar } from "@/features/tickets/components/TicketMeta"
 import { useTicketMessages } from "@/features/tickets/hooks/useTicketQueries"
-import type { Ticket, TicketMessage } from "@/features/tickets/types/ticket.types"
+import type { Ticket, TicketAttachment, TicketMessage } from "@/features/tickets/types/ticket.types"
 import { apiErrorMessage } from "@/lib/api-error"
 import { cn } from "@/lib/utils"
 import { ErrorState } from "@/shared/components/ErrorState"
@@ -15,6 +16,7 @@ type Entry = {
   kind: "customer" | "staff" | "note"
   body: string
   createdAt: string
+  attachments: TicketAttachment[]
 }
 
 const toEntry = (ticket: Ticket, message: TicketMessage): Entry => {
@@ -25,6 +27,7 @@ const toEntry = (ticket: Ticket, message: TicketMessage): Entry => {
     kind: message.isInternal ? "note" : fromRequester ? "customer" : "staff",
     body: message.body,
     createdAt: message.createdAt,
+    attachments: message.attachments,
   }
 }
 
@@ -50,6 +53,7 @@ const TicketConversation = ({ ticket }: { ticket: Ticket }) => {
     kind: "customer",
     body: ticket.description,
     createdAt: ticket.createdAt,
+    attachments: ticket.attachments,
   }
   const entries = [opening, ...(messages.data?.data ?? []).map((message) => toEntry(ticket, message))]
 
@@ -76,6 +80,7 @@ const TicketConversation = ({ ticket }: { ticket: Ticket }) => {
               <RelativeTime iso={entry.createdAt} />
             </div>
             <p className="text-sm leading-6 break-words whitespace-pre-wrap text-foreground">{entry.body}</p>
+            <TicketAttachments ticketId={ticket.id} attachments={entry.attachments} className="mt-3" />
           </li>
         ))}
       </ol>

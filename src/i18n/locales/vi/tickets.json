@@ -248,5 +248,22 @@
       "COLLABORATOR": "Cùng xử lý",
       "REVIEWER": "Review"
     }
+  },
+  "attachments": {
+    "attach": "Đính kèm",
+    "limits_hint": "Tối đa 5 tệp PNG / JPEG / WEBP / TXT, mỗi tệp ≤ 10 MB.",
+    "pending_label": "Tệp chờ gửi",
+    "uploading": "Đang tải tệp lên…",
+    "remove": "Bỏ tệp {{name}}",
+    "wrong_type": "Chỉ nhận PNG, JPEG, WEBP hoặc TXT",
+    "too_large": "Tệp vượt quá 10 MB",
+    "empty_file": "Tệp rỗng",
+    "too_many": "Mỗi tin nhắn tối đa {{count}} tệp; các tệp thừa đã bị bỏ.",
+    "duplicate_skipped": "{{count}} tệp đã có trong danh sách, bỏ qua.",
+    "fix_failed": "Bỏ tệp lỗi để gửi",
+    "download": "Tải {{name}}",
+    "open_image": "Mở ảnh {{name}}",
+    "preview_failed": "Không tải được ảnh {{name}}",
+    "list_label_other": "{{count}} tệp đính kèm"
   }
 }
