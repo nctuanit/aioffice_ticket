@@ -1,0 +1,34 @@
+{
+  "app_name": "Ticket Hub",
+  "app_tagline": "Bàn xử lý ticket hỗ trợ AI SUPER OFFICE",
+  "loading": "Đang tải…",
+  "retry": "Thử lại",
+  "back": "Quay lại",
+  "save": "Lưu",
+  "cancel": "Hủy",
+  "close": "Đóng",
+  "search": "Tìm kiếm",
+  "language": "Ngôn ngữ",
+  "skip_to_content": "Bỏ qua tới nội dung",
+  "open_menu": "Mở menu",
+  "error_generic": "Có lỗi xảy ra, vui lòng thử lại.",
+  "error_network": "Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.",
+  "not_found_title": "Không tìm thấy trang",
+  "not_found_body": "Đường dẫn không tồn tại hoặc bạn không có quyền truy cập.",
+  "go_home": "Về trang chính",
+  "nav": {
+    "dashboard": "Tổng quan",
+    "queue": "Hàng đợi",
+    "mine": "Của tôi",
+    "closed": "Đã đóng",
+    "calendar": "Lịch làm việc"
+  },
+  "role": {
+    "admin": "Quản trị",
+    "support": "Hỗ trợ",
+    "tester": "Tester",
+    "user": "Người dùng"
+  },
+  "coming_soon_title": "Màn hình này đang được xây dựng",
+  "coming_soon_body": "Phần dữ liệu ticket sẽ được nối trong giai đoạn kế tiếp."
+}

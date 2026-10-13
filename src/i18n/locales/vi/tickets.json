@@ -1,0 +1,49 @@
+{
+  "queue": {
+    "title": "Hàng đợi ticket",
+    "subtitle": "Ticket chưa có người xử lý sẽ hết hạn sau 48 giờ làm việc.",
+    "empty_title": "Chưa có ticket nào",
+    "empty_body": "Khi khách gửi yêu cầu hỗ trợ, ticket sẽ xuất hiện ở đây."
+  },
+  "detail": {
+    "title": "Chi tiết ticket",
+    "not_found": "Không tìm thấy ticket này."
+  },
+  "dashboard": {
+    "title": "Tổng quan",
+    "subtitle": "Tình trạng hàng đợi hỗ trợ hôm nay."
+  },
+  "calendar": {
+    "title": "Lịch làm việc",
+    "subtitle": "Ngày làm việc và ngày lễ dùng để tính hạn 48 giờ."
+  },
+  "status": {
+    "OPEN": "Mới",
+    "IN_PROGRESS": "Đang xử lý",
+    "WAITING_FOR_USER": "Chờ khách",
+    "WAITING_FOR_TEAM": "Chờ nội bộ",
+    "RESOLVED": "Đã giải quyết",
+    "CLOSED": "Đã đóng",
+    "CANCELLED": "Đã hủy",
+    "EXPIRED": "Hết hạn"
+  },
+  "priority": {
+    "LOW": "Thấp",
+    "NORMAL": "Bình thường",
+    "HIGH": "Cao",
+    "URGENT": "Khẩn"
+  },
+  "category": {
+    "BUG": "Báo lỗi",
+    "ACCOUNT": "Tài khoản",
+    "LICENSE": "Bản quyền",
+    "BILLING": "Thanh toán",
+    "AI_CREDIT": "Quỹ AI",
+    "FEATURE_REQUEST": "Đề xuất tính năng",
+    "OTHER": "Khác"
+  },
+  "source": {
+    "APP": "Ứng dụng",
+    "WEB_ADMIN": "Web admin"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "app_name": "Ticket Hub",
+  "app_tagline": "AI SUPER OFFICE support desk",
+  "loading": "Loading…",
+  "retry": "Retry",
+  "back": "Back",
+  "save": "Save",
+  "cancel": "Cancel",
+  "close": "Close",
+  "search": "Search",
+  "language": "Language",
+  "skip_to_content": "Skip to content",
+  "open_menu": "Open menu",
+  "error_generic": "Something went wrong, please try again.",
+  "error_network": "Cannot reach the server. Check your connection and try again.",
+  "not_found_title": "Page not found",
+  "not_found_body": "This path does not exist or you have no access to it.",
+  "go_home": "Go to home",
+  "nav": {
+    "dashboard": "Overview",
+    "queue": "Queue",
+    "mine": "Mine",
+    "closed": "Closed",
+    "calendar": "Working calendar"
+  },
+  "role": {
+    "admin": "Admin",
+    "support": "Support",
+    "tester": "Tester",
+    "user": "User"
+  },
+  "coming_soon_title": "This screen is under construction",
+  "coming_soon_body": "Ticket data will be wired in the next phase."
+}

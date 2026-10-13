@@ -1,0 +1,49 @@
+{
+  "queue": {
+    "title": "Ticket queue",
+    "subtitle": "Unhandled tickets expire after 48 working hours.",
+    "empty_title": "No tickets yet",
+    "empty_body": "Tickets will show up here when customers ask for support."
+  },
+  "detail": {
+    "title": "Ticket detail",
+    "not_found": "This ticket could not be found."
+  },
+  "dashboard": {
+    "title": "Overview",
+    "subtitle": "Today's support queue at a glance."
+  },
+  "calendar": {
+    "title": "Working calendar",
+    "subtitle": "Working days and holidays used for the 48-hour deadline."
+  },
+  "status": {
+    "OPEN": "New",
+    "IN_PROGRESS": "In progress",
+    "WAITING_FOR_USER": "Waiting for customer",
+    "WAITING_FOR_TEAM": "Waiting for team",
+    "RESOLVED": "Resolved",
+    "CLOSED": "Closed",
+    "CANCELLED": "Cancelled",
+    "EXPIRED": "Expired"
+  },
+  "priority": {
+    "LOW": "Low",
+    "NORMAL": "Normal",
+    "HIGH": "High",
+    "URGENT": "Urgent"
+  },
+  "category": {
+    "BUG": "Bug report",
+    "ACCOUNT": "Account",
+    "LICENSE": "License",
+    "BILLING": "Billing",
+    "AI_CREDIT": "AI credit",
+    "FEATURE_REQUEST": "Feature request",
+    "OTHER": "Other"
+  },
+  "source": {
+    "APP": "App",
+    "WEB_ADMIN": "Web admin"
+  }
+}
