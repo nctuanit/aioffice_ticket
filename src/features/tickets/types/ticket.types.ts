@@ -25,6 +25,32 @@ const userSummarySchema = z.object({
   role: z.string().optional(),
 })
 
+/** `TicketAttachmentResDto` — metadata only; bytes come through a short-lived download URL. */
+const ticketAttachmentSchema = z.object({
+  id: z.uuid(),
+  fileName: z.string(),
+  mimeType: z.string(),
+  sizeBytes: z.number(),
+  messageId: z.uuid().nullable().optional(),
+  createdAt: z.string(),
+})
+
+const attachmentPresignSchema = z.object({
+  attachmentId: z.uuid(),
+  uploadUrl: z.string(),
+  expiresIn: z.number(),
+  contentType: z.string(),
+  maxBytes: z.number(),
+})
+
+const attachmentDownloadSchema = z.object({
+  downloadUrl: z.string(),
+  expiresIn: z.number(),
+  fileName: z.string(),
+  mimeType: z.string(),
+  sizeBytes: z.number(),
+})
+
 const ticketParticipantRoleSchema = z.enum(["WATCHER", "COLLABORATOR", "REVIEWER"])
 
 /** `TicketParticipantResDto` — people tagged on a ticket (staff only; customers never see them). */
@@ -50,6 +76,8 @@ const ticketSchema = z.object({
   assigneeId: z.uuid().nullable().optional(),
   assignee: userSummarySchema.nullable().optional(),
   participants: z.array(ticketParticipantSchema).default([]),
+  /** Attachments of the opening description (detail only; lists send none). */
+  attachments: z.array(ticketAttachmentSchema).default([]),
   category: ticketCategorySchema,
   productModule: ticketProductModuleSchema.nullable().optional(),
   subject: z.string(),
@@ -79,6 +107,7 @@ const ticketMessageSchema = z.object({
   sender: userSummarySchema.nullable().optional(),
   body: z.string(),
   isInternal: z.boolean(),
+  attachments: z.array(ticketAttachmentSchema).default([]),
   createdAt: z.string(),
 })
 
@@ -133,6 +162,9 @@ const paginatedTicketMessagesSchema = paginated(ticketMessageSchema)
 const paginatedTicketEventsSchema = paginated(ticketEventSchema)
 
 type Ticket = z.infer<typeof ticketSchema>
+type TicketAttachment = z.infer<typeof ticketAttachmentSchema>
+type AttachmentPresign = z.infer<typeof attachmentPresignSchema>
+type AttachmentDownload = z.infer<typeof attachmentDownloadSchema>
 type TicketParticipant = z.infer<typeof ticketParticipantSchema>
 type TicketParticipantRole = z.infer<typeof ticketParticipantRoleSchema>
 type TicketMessage = z.infer<typeof ticketMessageSchema>
@@ -151,11 +183,14 @@ type PaginatedTicketMessages = z.infer<typeof paginatedTicketMessagesSchema>
 type PaginatedTicketEvents = z.infer<typeof paginatedTicketEventsSchema>
 
 export {
+  attachmentDownloadSchema,
+  attachmentPresignSchema,
   paginatedTicketEventsSchema,
   paginatedTicketMessagesSchema,
   paginatedTicketsSchema,
   supportCalendarSchema,
   supportHolidaySchema,
+  ticketAttachmentSchema,
   ticketCategorySchema,
   ticketEventSchema,
   ticketMessageSchema,
@@ -168,12 +203,15 @@ export {
   ticketStatsSchema,
   ticketStatusSchema,
   userSummarySchema,
+  type AttachmentDownload,
+  type AttachmentPresign,
   type PaginatedTicketEvents,
   type PaginatedTicketMessages,
   type PaginatedTickets,
   type SupportCalendar,
   type SupportHoliday,
   type Ticket,
+  type TicketAttachment,
   type TicketCategory,
   type TicketEvent,
   type TicketMessage,

@@ -12,6 +12,9 @@ const ticketKeys = {
   detail: (ticketId: string) => [...ticketKeys.details(), ticketId] as const,
   messages: (ticketId: string) => [...ticketKeys.detail(ticketId), "messages"] as const,
   events: (ticketId: string) => [...ticketKeys.detail(ticketId), "events"] as const,
+  /** Outside `detail(ticketId)`: a message/detail invalidation must not refetch every presigned URL. */
+  attachmentUrl: (ticketId: string, attachmentId: string, inline: boolean) =>
+    [...ticketKeys.all, "attachment-url", ticketId, attachmentId, inline] as const,
   stats: () => [...ticketKeys.all, "stats"] as const,
   assignees: () => [...ticketKeys.all, "assignees"] as const,
   calendar: () => ["support", "calendar"] as const,

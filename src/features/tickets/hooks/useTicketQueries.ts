@@ -2,6 +2,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { ticketKeys } from "@/features/tickets/api/ticket.keys"
 import {
+  getAttachmentDownloadUrl,
   getTicket,
   getTicketStats,
   listAssignees,
@@ -10,6 +11,7 @@ import {
   listTickets,
   type ListTicketsParams,
 } from "@/features/tickets/api/tickets.api"
+import { ATTACHMENT_URL_STALE_MS } from "@/features/tickets/constants/attachment.constants"
 import {
   DETAIL_REFETCH_INTERVAL_MS,
   QUEUE_REFETCH_INTERVAL_MS,
@@ -55,6 +57,15 @@ const useTicketStats = () =>
     refetchOnWindowFocus: true,
   })
 
+/** Presigned object URL for an image preview; refreshed before the 5-minute link expires. */
+/** Presigned URL (5 min), cached a little under that; callers refetch when `isStale` before following it. */
+const useAttachmentDownloadUrl = (ticketId: string, attachmentId: string, inline = false) =>
+  useQuery({
+    queryKey: ticketKeys.attachmentUrl(ticketId, attachmentId, inline),
+    queryFn: () => getAttachmentDownloadUrl(ticketId, attachmentId, inline),
+    staleTime: ATTACHMENT_URL_STALE_MS,
+  })
+
 /** Active admin / support users; changes rarely. */
 const useAssignees = () =>
   useQuery({
@@ -65,6 +76,7 @@ const useAssignees = () =>
 
 export {
   useAssignees,
+  useAttachmentDownloadUrl,
   useTicketDetail,
   useTicketEvents,
   useTicketList,

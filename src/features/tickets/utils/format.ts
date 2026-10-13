@@ -27,4 +27,11 @@ const formatDateTime = (iso: string, locale: string) =>
 const userLabel = (user: { fullName?: string | null; email?: string | null } | null | undefined) =>
   user?.fullName || user?.email || ""
 
-export { formatDateTime, relativeTime, userLabel }
+/** "245 KB", "1.2 MB" — enough precision for attachment chips. */
+const formatBytes = (bytes: number) => {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+export { formatBytes, formatDateTime, relativeTime, userLabel }
