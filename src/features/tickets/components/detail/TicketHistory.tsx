@@ -39,6 +39,10 @@ const TicketHistory = ({ ticketId }: { ticketId: string }) => {
         return t("history.assignee", { name: nameOf(str(after.assigneeId)) })
       case "HANDLED":
         return t("history.handled")
+      case "PARTICIPANT_ADDED":
+        return t("history.participant_added", { name: nameOf(str(after.userId)) })
+      case "PARTICIPANT_REMOVED":
+        return t("history.participant_removed", { name: nameOf(str(before.userId)) })
       case "EXPIRED":
         return t("history.expired")
       default:

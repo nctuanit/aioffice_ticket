@@ -49,6 +49,7 @@ const TicketFilters = ({ search, onChange, showStatus = true }: TicketFiltersPro
   const hasFilters = Boolean(
     search.q ||
       search.assignee ||
+      search.participant ||
       search.category ||
       search.productModule ||
       search.priority ||
@@ -76,7 +77,7 @@ const TicketFilters = ({ search, onChange, showStatus = true }: TicketFiltersPro
           maxLength={200}
         />
       </div>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
         {showStatus ? (
           <NativeSelect
             aria-label={t("filters.status")}
@@ -99,6 +100,14 @@ const TicketFilters = ({ search, onChange, showStatus = true }: TicketFiltersPro
           <option value="">{t("filters.all_assignees")}</option>
           <option value="me">{t("filters.assignee_me")}</option>
           <option value="none">{t("filters.assignee_none")}</option>
+        </NativeSelect>
+        <NativeSelect
+          aria-label={t("filters.participant")}
+          value={search.participant ?? ""}
+          onChange={(event) => select("participant", event.target.value)}
+        >
+          <option value="">{t("filters.all_participants")}</option>
+          <option value="me">{t("filters.participant_me")}</option>
         </NativeSelect>
         <NativeSelect
           aria-label={t("filters.module")}
@@ -160,6 +169,7 @@ const TicketFilters = ({ search, onChange, showStatus = true }: TicketFiltersPro
                 q: undefined,
                 status: undefined,
                 assignee: undefined,
+                participant: undefined,
                 category: undefined,
                 productModule: undefined,
                 priority: undefined,

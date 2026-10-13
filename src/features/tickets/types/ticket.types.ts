@@ -25,6 +25,19 @@ const userSummarySchema = z.object({
   role: z.string().optional(),
 })
 
+const ticketParticipantRoleSchema = z.enum(["WATCHER", "COLLABORATOR", "REVIEWER"])
+
+/** `TicketParticipantResDto` — people tagged on a ticket (staff only; customers never see them). */
+const ticketParticipantSchema = z.object({
+  id: z.uuid(),
+  kind: z.string().optional(),
+  role: ticketParticipantRoleSchema,
+  userId: z.uuid().nullable().optional(),
+  user: userSummarySchema.nullable().optional(),
+  addedBy: z.uuid().nullable().optional(),
+  createdAt: z.string(),
+})
+
 /** Staff view of a ticket (`StaffTicketResDto`, `GET /admin/tickets*`). */
 const ticketSchema = z.object({
   id: z.uuid(),
@@ -36,6 +49,7 @@ const ticketSchema = z.object({
   workspace: z.object({ id: z.uuid(), name: z.string() }).nullable().optional(),
   assigneeId: z.uuid().nullable().optional(),
   assignee: userSummarySchema.nullable().optional(),
+  participants: z.array(ticketParticipantSchema).default([]),
   category: ticketCategorySchema,
   productModule: ticketProductModuleSchema.nullable().optional(),
   subject: z.string(),
@@ -119,6 +133,8 @@ const paginatedTicketMessagesSchema = paginated(ticketMessageSchema)
 const paginatedTicketEventsSchema = paginated(ticketEventSchema)
 
 type Ticket = z.infer<typeof ticketSchema>
+type TicketParticipant = z.infer<typeof ticketParticipantSchema>
+type TicketParticipantRole = z.infer<typeof ticketParticipantRoleSchema>
 type TicketMessage = z.infer<typeof ticketMessageSchema>
 type TicketEvent = z.infer<typeof ticketEventSchema>
 type TicketStats = z.infer<typeof ticketStatsSchema>
@@ -143,6 +159,8 @@ export {
   ticketCategorySchema,
   ticketEventSchema,
   ticketMessageSchema,
+  ticketParticipantRoleSchema,
+  ticketParticipantSchema,
   ticketPrioritySchema,
   ticketProductModuleSchema,
   ticketSchema,
@@ -159,6 +177,8 @@ export {
   type TicketCategory,
   type TicketEvent,
   type TicketMessage,
+  type TicketParticipant,
+  type TicketParticipantRole,
   type TicketPriority,
   type TicketProductModule,
   type TicketSource,

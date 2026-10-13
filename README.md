@@ -58,4 +58,4 @@ open-office chỉ cho phép các origin trong `AUTH_COOKIE_ALLOWED_ORIGINS` (n�
 - **Chi tiết** (`/tickets/:id`): hội thoại (ghi chú nội bộ nền vàng có nhãn), trả lời khách / ghi chú nội bộ (Ctrl + Enter), nhận xử lý, đổi trạng thái / ưu tiên, phân công (admin) hoặc bỏ nhận (support), thông tin và lịch sử.
 - **Lịch làm việc** (`/settings/calendar`, chỉ admin): ngày làm việc trong tuần và ngày lễ dùng để tính hạn 48 giờ.
 
-Chưa có: tag người vào ticket (cần bảng `ticket_participants` + API ở backend, plan §11.3).
+- **Người theo dõi** (P4b): gắn nhiều admin / support vào một ticket để theo dõi / cùng xử lý (khác người xử lý chính). Avatar xếp chồng trên thẻ Kanban và dòng danh sách; ô tìm-và-gắn trong panel xử lý; bộ lọc "Gắn tôi theo dõi" (`?participant=me`); gõ `@tên` hoặc `@phần-trước-@-email` trong ghi chú nội bộ cũng tự gắn. Khách không bao giờ thấy danh sách này.

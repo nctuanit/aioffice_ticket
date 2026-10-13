@@ -8,6 +8,7 @@ import {
   SourceIcon,
   StatusBadge,
 } from "@/features/tickets/components/TicketBadges"
+import { ParticipantAvatars } from "@/features/tickets/components/ParticipantAvatars"
 import { ExpiryCountdown, RelativeTime, UserAvatar } from "@/features/tickets/components/TicketMeta"
 import type { Ticket } from "@/features/tickets/types/ticket.types"
 import { cn } from "@/lib/utils"
@@ -96,6 +97,7 @@ const TicketTable = ({ tickets }: { tickets: Ticket[] }) => {
                 </td>
                 <td className="px-3 py-3 align-top">
                   <Assignee ticket={ticket} />
+                  <ParticipantAvatars participants={ticket.participants} className="mt-1.5" />
                 </td>
                 <td className="px-3 py-3 align-top text-xs text-muted-foreground">
                   <RelativeTime iso={ticket.updatedAt} />
@@ -126,7 +128,8 @@ const TicketTable = ({ tickets }: { tickets: Ticket[] }) => {
                 <PriorityIndicator priority={ticket.priority} />
                 <ProductModuleBadge module={ticket.productModule} />
                 <CustomerRepliedBadge ticket={ticket} />
-                <span className="ml-auto">
+                <span className="ml-auto flex items-center gap-2">
+                  <ParticipantAvatars participants={ticket.participants} max={2} />
                   <RelativeTime iso={ticket.updatedAt} />
                 </span>
               </div>

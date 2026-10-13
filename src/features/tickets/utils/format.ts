@@ -23,4 +23,8 @@ const relativeTime = (iso: string, locale: string, now = Date.now()) => {
 const formatDateTime = (iso: string, locale: string) =>
   new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso))
 
-export { formatDateTime, relativeTime }
+/** Display name of a user summary: full name, else email, else empty. */
+const userLabel = (user: { fullName?: string | null; email?: string | null } | null | undefined) =>
+  user?.fullName || user?.email || ""
+
+export { formatDateTime, relativeTime, userLabel }

@@ -16,6 +16,8 @@ const ticketListSearchSchema = z.object({
   view: z.enum(["list", "board"]).optional().catch(undefined),
   status: z.enum(TICKET_STATUSES).optional().catch(undefined),
   assignee: z.enum(["me", "none"]).optional().catch(undefined),
+  /** `me` → only tickets the current user is tagged on. */
+  participant: z.enum(["me"]).optional().catch(undefined),
   category: z.enum(TICKET_CATEGORIES).optional().catch(undefined),
   productModule: z.enum(TICKET_PRODUCT_MODULES).optional().catch(undefined),
   priority: z.enum(TICKET_PRIORITIES).optional().catch(undefined),
@@ -31,6 +33,7 @@ type TicketBoardFilters = Omit<TicketListSearch, "view" | "status" | "page">
 
 const pickBoardFilters = (search: TicketListSearch): TicketBoardFilters => ({
   assignee: search.assignee,
+  participant: search.participant,
   category: search.category,
   productModule: search.productModule,
   priority: search.priority,

@@ -63,6 +63,14 @@ const TicketListView = ({ search, onPage }: { search: TicketListSearch; onPage: 
   )
 }
 
+/** Page title follows the "preset" filters reachable from the sidebar. */
+const queueTitleKey = (search: TicketListSearch) => {
+  if (search.participant === "me") return "queue.title_watching"
+  if (search.assignee === "me") return "queue.title_mine"
+  if (search.status === "CLOSED") return "queue.title_closed"
+  return "queue.title"
+}
+
 /** Ticket queue: list (paged table) or Kanban board, sharing one URL-driven filter bar. */
 const QueuePage = () => {
   const { t } = useTranslation("tickets")
@@ -79,8 +87,7 @@ const QueuePage = () => {
     [navigate],
   )
 
-  const title =
-    search.assignee === "me" ? t("queue.title_mine") : search.status === "CLOSED" ? t("queue.title_closed") : t("queue.title")
+  const title = t(queueTitleKey(search))
 
   return (
     <>

@@ -5,15 +5,18 @@ import { toast } from "sonner"
 import { ticketKeys } from "@/features/tickets/api/ticket.keys"
 import {
   addInternalNote,
+  addParticipant,
   changeTicketAssignee,
   changeTicketPriority,
   changeTicketStatus,
   claimTicket,
+  removeParticipant,
   replyToCustomer,
   type SendMessageInput,
 } from "@/features/tickets/api/tickets.api"
 import type { TicketStatusCode } from "@/features/tickets/constants/ticket.constants"
-import type { Ticket, TicketPriority } from "@/features/tickets/types/ticket.types"
+import type { Ticket, TicketParticipantRole, TicketPriority } from "@/features/tickets/types/ticket.types"
+import { userLabel } from "@/features/tickets/utils/format"
 import { apiErrorMessage } from "@/lib/api-error"
 
 /**
@@ -117,12 +120,49 @@ const useSendTicketMessage = (ticketId: string) => {
   })
 }
 
+/** Participants travel with the ticket detail; the history gains a line per change. */
+const afterParticipantChange = (queryClient: QueryClient, ticketId: string) =>
+  Promise.all([
+    queryClient.invalidateQueries({ queryKey: ticketKeys.events(ticketId) }),
+    syncTicket(queryClient, undefined, ticketId),
+  ])
+
+const useAddParticipant = (ticketId: string) => {
+  const queryClient = useQueryClient()
+  const { t } = useTranslation("tickets")
+  const onError = useOnError()
+  return useMutation({
+    mutationFn: (input: { userId: string; role?: TicketParticipantRole }) => addParticipant({ ticketId, ...input }),
+    onSuccess: async (participant) => {
+      toast.success(t("toast.participant_added", { name: userLabel(participant.user) }))
+      await afterParticipantChange(queryClient, ticketId)
+    },
+    onError,
+  })
+}
+
+const useRemoveParticipant = (ticketId: string) => {
+  const queryClient = useQueryClient()
+  const { t } = useTranslation("tickets")
+  const onError = useOnError()
+  return useMutation({
+    mutationFn: ({ userId }: { userId: string; name: string }) => removeParticipant({ ticketId, userId }),
+    onSuccess: async (_result, { name }) => {
+      toast.success(t("toast.participant_removed", { name }))
+      await afterParticipantChange(queryClient, ticketId)
+    },
+    onError,
+  })
+}
+
 export {
   syncTicket,
+  useAddParticipant,
   useChangeTicketAssignee,
   useChangeTicketPriority,
   useChangeTicketStatus,
   useClaimTicket,
+  useRemoveParticipant,
   useSendTicketMessage,
   type SendMode,
 }

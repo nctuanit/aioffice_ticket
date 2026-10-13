@@ -12,6 +12,7 @@ import {
   supportCalendarSchema,
   supportHolidaySchema,
   ticketMessageSchema,
+  ticketParticipantSchema,
   ticketSchema,
   ticketStatsSchema,
   userSummarySchema,
@@ -22,6 +23,8 @@ import {
   type SupportHoliday,
   type Ticket,
   type TicketMessage,
+  type TicketParticipant,
+  type TicketParticipantRole,
   type TicketPriority,
   type TicketStats,
   type UserSummary,
@@ -46,6 +49,9 @@ const TICKET_ENDPOINTS = {
   status: (ticketId: string) => `/admin/tickets/${id(ticketId)}/status`,
   assignee: (ticketId: string) => `/admin/tickets/${id(ticketId)}/assignee`,
   priority: (ticketId: string) => `/admin/tickets/${id(ticketId)}/priority`,
+  participants: (ticketId: string) => `/admin/tickets/${id(ticketId)}/participants`,
+  participant: (ticketId: string, userId: string) =>
+    `/admin/tickets/${id(ticketId)}/participants/${encodeURIComponent(userId)}`,
   calendar: "/admin/support/calendar",
   holidays: "/admin/support/holidays",
   holiday: (date: string) => `/admin/support/holidays/${encodeURIComponent(date)}`,
@@ -64,6 +70,7 @@ const listTickets = async (params: ListTicketsParams): Promise<PaginatedTickets>
     params: {
       status: params.status,
       assignee: params.assignee,
+      participant: params.participant,
       category: params.category,
       productModule: params.productModule,
       priority: params.priority,
@@ -134,6 +141,17 @@ const changeTicketPriority = async (ticketId: string, priority: TicketPriority):
   return ticketSchema.parse(data)
 }
 
+type AddParticipantInput = { ticketId: string; userId: string; role?: TicketParticipantRole }
+
+const addParticipant = async ({ ticketId, ...body }: AddParticipantInput): Promise<TicketParticipant> => {
+  const { data } = await api.post(TICKET_ENDPOINTS.participants(ticketId), body)
+  return ticketParticipantSchema.parse(data)
+}
+
+const removeParticipant = async ({ ticketId, userId }: { ticketId: string; userId: string }): Promise<void> => {
+  await api.delete(TICKET_ENDPOINTS.participant(ticketId, userId))
+}
+
 const getSupportCalendar = async (): Promise<SupportCalendar> => {
   const { data } = await api.get(TICKET_ENDPOINTS.calendar)
   return supportCalendarSchema.parse(data)
@@ -161,6 +179,7 @@ const removeHoliday = async (date: string): Promise<void> => {
 export {
   addHoliday,
   addInternalNote,
+  addParticipant,
   changeTicketAssignee,
   changeTicketPriority,
   changeTicketStatus,
@@ -174,9 +193,11 @@ export {
   listTicketMessages,
   listTickets,
   removeHoliday,
+  removeParticipant,
   replyToCustomer,
   TICKET_ENDPOINTS,
   updateSupportCalendar,
+  type AddParticipantInput,
   type ListTicketsParams,
   type SendMessageInput,
 }

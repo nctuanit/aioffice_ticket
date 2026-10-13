@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { NativeSelect } from "@/components/ui/native-select"
 import { useAuthStore } from "@/features/auth/stores/auth.store"
 import { MoveTicketDialog, type PendingMove } from "@/features/tickets/components/board/MoveTicketDialog"
+import { TicketParticipants } from "@/features/tickets/components/detail/TicketParticipants"
 import { ticketKeys } from "@/features/tickets/api/ticket.keys"
 import { replyToCustomer } from "@/features/tickets/api/tickets.api"
 import {
@@ -170,6 +171,8 @@ const TicketActions = ({ ticket }: { ticket: Ticket }) => {
           </div>
         )}
       </Field>
+
+      <TicketParticipants ticket={ticket} />
 
       <MoveTicketDialog
         key={pending ? `${pending.ticket.id}-${pending.to}` : "none"}

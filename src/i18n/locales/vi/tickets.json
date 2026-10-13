@@ -9,7 +9,8 @@
     "no_match_title": "Không có ticket khớp bộ lọc",
     "no_match_body": "Thử bỏ bớt bộ lọc hoặc đổi từ khóa tìm kiếm.",
     "unassigned": "Chưa phân công",
-    "customer_replied": "Khách vừa trả lời"
+    "customer_replied": "Khách vừa trả lời",
+    "title_watching": "Ticket tôi theo dõi"
   },
   "view": {
     "label": "Chế độ xem",
@@ -33,7 +34,10 @@
     "all_priorities": "Mọi mức ưu tiên",
     "source": "Nguồn",
     "all_sources": "Mọi nguồn",
-    "clear": "Xóa bộ lọc"
+    "clear": "Xóa bộ lọc",
+    "participant": "Người theo dõi",
+    "all_participants": "Theo dõi: tất cả",
+    "participant_me": "Gắn tôi theo dõi"
   },
   "board": {
     "subtitle": "Kéo thẻ sang cột khác để đổi trạng thái. Chỉ những cột hợp lệ mới nhận thẻ.",
@@ -104,7 +108,9 @@
     "unassigned": "Đã bỏ phân công",
     "priority_changed": "Đã đổi ưu tiên thành {{priority}}",
     "reply_sent": "Đã gửi trả lời cho khách",
-    "note_added": "Đã lưu ghi chú nội bộ"
+    "note_added": "Đã lưu ghi chú nội bộ",
+    "participant_added": "Đã gắn {{name}} theo dõi ticket",
+    "participant_removed": "Đã bỏ gắn {{name}}"
   },
   "history": {
     "created": "Khách tạo ticket",
@@ -114,7 +120,9 @@
     "handled": "Bắt đầu xử lý — tắt hạn 48 giờ",
     "expired": "Hết hạn vì chưa ai xử lý trong 48 giờ làm việc",
     "system": "Hệ thống",
-    "someone": "Một nhân viên"
+    "someone": "Một nhân viên",
+    "participant_added": "Gắn {{name}} theo dõi",
+    "participant_removed": "Bỏ gắn {{name}}"
   },
   "expiry": {
     "hours_left_other": "Còn {{count}} giờ",
@@ -225,5 +233,20 @@
   "source": {
     "APP": "Ứng dụng",
     "WEB_ADMIN": "Web admin"
+  },
+  "participants": {
+    "title": "Người theo dõi",
+    "empty": "Chưa gắn ai theo dõi.",
+    "add_label": "Thêm người theo dõi",
+    "add_placeholder": "Gõ tên hoặc email để gắn…",
+    "no_match": "Không có ai khớp",
+    "remove": "Bỏ gắn {{name}}",
+    "hint": "Gõ @tên trong ghi chú nội bộ cũng tự gắn người đó. Khách không thấy danh sách này.",
+    "list_label_other": "{{count}} người theo dõi: {{names}}",
+    "role": {
+      "WATCHER": "Theo dõi",
+      "COLLABORATOR": "Cùng xử lý",
+      "REVIEWER": "Review"
+    }
   }
 }

@@ -16,6 +16,7 @@ import {
   STAFF_TRANSITIONS,
   type TicketStatusCode,
 } from "@/features/tickets/constants/ticket.constants"
+import { ParticipantAvatars } from "@/features/tickets/components/ParticipantAvatars"
 import { CustomerRepliedBadge } from "@/features/tickets/components/queue/TicketTable"
 import {
   PriorityIndicator,
@@ -51,6 +52,7 @@ const BoardCardBody = ({ ticket, className }: BoardCardBodyProps) => {
         <CustomerRepliedBadge ticket={ticket} />
         <span className="ml-auto flex items-center gap-2">
           <RelativeTime iso={ticket.updatedAt} />
+          <ParticipantAvatars participants={ticket.participants} max={2} />
           {ticket.assignee ? (
             <UserAvatar user={ticket.assignee} size="xs" />
           ) : (

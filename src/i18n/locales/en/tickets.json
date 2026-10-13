@@ -9,7 +9,8 @@
     "no_match_title": "No tickets match these filters",
     "no_match_body": "Try removing a filter or changing the search term.",
     "unassigned": "Unassigned",
-    "customer_replied": "Customer replied"
+    "customer_replied": "Customer replied",
+    "title_watching": "Tickets I follow"
   },
   "view": {
     "label": "View",
@@ -33,7 +34,10 @@
     "all_priorities": "All priorities",
     "source": "Source",
     "all_sources": "All sources",
-    "clear": "Clear filters"
+    "clear": "Clear filters",
+    "participant": "Followers",
+    "all_participants": "Following: all",
+    "participant_me": "Tagged me"
   },
   "board": {
     "subtitle": "Drag a card to another column to change its status. Only valid columns accept it.",
@@ -104,7 +108,9 @@
     "unassigned": "Assignment removed",
     "priority_changed": "Priority set to {{priority}}",
     "reply_sent": "Reply sent to the customer",
-    "note_added": "Internal note saved"
+    "note_added": "Internal note saved",
+    "participant_added": "{{name}} now follows this ticket",
+    "participant_removed": "{{name}} removed"
   },
   "history": {
     "created": "Customer created the ticket",
@@ -114,7 +120,9 @@
     "handled": "Handling started — 48-hour deadline cleared",
     "expired": "Expired: nobody handled it within 48 working hours",
     "system": "System",
-    "someone": "A staff member"
+    "someone": "A staff member",
+    "participant_added": "Tagged {{name}}",
+    "participant_removed": "Untagged {{name}}"
   },
   "expiry": {
     "hours_left_one": "{{count}} hour left",
@@ -227,5 +235,21 @@
   "source": {
     "APP": "App",
     "WEB_ADMIN": "Web admin"
+  },
+  "participants": {
+    "title": "Followers",
+    "empty": "Nobody tagged yet.",
+    "add_label": "Add a follower",
+    "add_placeholder": "Type a name or email to tag…",
+    "no_match": "No one matches",
+    "remove": "Remove {{name}}",
+    "hint": "Typing @name in an internal note tags that person too. Customers never see this list.",
+    "list_label_one": "{{count}} follower: {{names}}",
+    "list_label_other": "{{count}} followers: {{names}}",
+    "role": {
+      "WATCHER": "Watcher",
+      "COLLABORATOR": "Collaborator",
+      "REVIEWER": "Reviewer"
+    }
   }
 }
