@@ -95,7 +95,12 @@ const TicketActions = ({ ticket }: { ticket: Ticket }) => {
   return (
     <section aria-label={t("detail.actions")} className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4">
       {!locked && !ticket.assigneeId ? (
-        <Button onClick={() => claim.mutate(ticket.id)} disabled={claim.isPending}>
+        <Button
+          onClick={() => claim.mutate(ticket.id)}
+          disabled={claim.isPending}
+          aria-keyshortcuts="C"
+          title={t("shortcuts.with_key", { label: t("detail.claim"), key: "C" })}
+        >
           <Hand aria-hidden="true" />
           {t("detail.claim")}
         </Button>

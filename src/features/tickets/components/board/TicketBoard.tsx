@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 
 import {
   DndContext,
@@ -11,8 +11,11 @@ import {
   type DragEndEvent,
   type DragStartEvent,
 } from "@dnd-kit/core"
+import { SearchX, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
+
+import { Button } from "@/components/ui/button"
 
 import { BoardCard, BoardCardBody } from "@/features/tickets/components/board/BoardCard"
 import { BoardColumn } from "@/features/tickets/components/board/BoardColumn"
@@ -25,8 +28,11 @@ import {
 } from "@/features/tickets/constants/ticket.constants"
 import { useBoardColumns, useMoveTicket } from "@/features/tickets/hooks/useBoard"
 import { useAuthStore } from "@/features/auth/stores/auth.store"
+import { useQueueNavStore } from "@/features/tickets/stores/queue-nav.store"
 import type { TicketBoardFilters } from "@/features/tickets/types/ticket-search"
 import type { Ticket } from "@/features/tickets/types/ticket.types"
+import { customerReplied } from "@/features/tickets/utils/ticket-signals"
+import { EmptyState } from "@/shared/components/EmptyState"
 
 /** Clicks right after a drop are the tail of the drag, not an "open" intent. */
 const CLICK_AFTER_DRAG_MS = 250
@@ -41,7 +47,16 @@ const ticketFrom = (data: unknown): Ticket | undefined =>
  * ticket status (validated against the staff transition table, confirmed for
  * resolve / close / cancel). Clicking a card opens the detail in a side sheet.
  */
-const TicketBoard = ({ filters }: { filters: TicketBoardFilters }) => {
+type TicketBoardProps = {
+  filters: TicketBoardFilters
+  /** "Customer replied" quick filter: narrows the loaded cards client-side. */
+  repliedOnly?: boolean
+  /** Any filter is active (offers "clear filters" when every column comes back empty). */
+  filtered?: boolean
+  onClearFilters?: () => void
+}
+
+const TicketBoard = ({ filters, repliedOnly = false, filtered = false, onClearFilters }: TicketBoardProps) => {
   const { t } = useTranslation("tickets")
   const currentUserId = useAuthStore((state) => state.user?.id)
   const [dragging, setDragging] = useState<Ticket | null>(null)
@@ -49,8 +64,25 @@ const TicketBoard = ({ filters }: { filters: TicketBoardFilters }) => {
   const [openTicketId, setOpenTicketId] = useState<string | null>(null)
   const lastDropAt = useRef(0)
 
-  const columns = useBoardColumns(filters, dragging !== null)
+  const loadedColumns = useBoardColumns(filters, dragging !== null)
   const move = useMoveTicket(filters)
+  const setQueueIds = useQueueNavStore((state) => state.setIds)
+
+  const columns = repliedOnly
+    ? loadedColumns.map((column) => {
+        const tickets = column.tickets.filter(customerReplied)
+        return { ...column, tickets, total: tickets.length }
+      })
+    : loadedColumns
+
+  // Next / previous in the detail sheet walk the board column by column, top to bottom.
+  const orderKey = columns.flatMap((column) => column.tickets.map((ticket) => ticket.id)).join(",")
+  const orderedIds = useMemo(() => (orderKey ? orderKey.split(",") : []), [orderKey])
+  const allLoaded = columns.every((column) => !column.isLoading)
+  useEffect(() => {
+    if (allLoaded) setQueueIds(orderedIds)
+  }, [allLoaded, orderedIds, setQueueIds])
+  const boardEmpty = allLoaded && columns.every((column) => !column.isError && column.tickets.length === 0)
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
@@ -100,6 +132,24 @@ const TicketBoard = ({ filters }: { filters: TicketBoardFilters }) => {
         ? t("board.a11y.dropped", { number: ticketName(active.data.current), status: statusName(over.id) })
         : t("board.a11y.cancelled", { number: ticketName(active.data.current) }),
     onDragCancel: ({ active }) => t("board.a11y.cancelled", { number: ticketName(active.data.current) }),
+  }
+
+  if (boardEmpty && (filtered || repliedOnly)) {
+    return (
+      <EmptyState
+        icon={SearchX}
+        title={t("queue.no_match_title")}
+        description={repliedOnly ? t("board.replied_empty_body") : t("queue.no_match_body")}
+        action={
+          onClearFilters ? (
+            <Button variant="outline" onClick={onClearFilters}>
+              <X aria-hidden="true" />
+              {t("filters.clear")}
+            </Button>
+          ) : null
+        }
+      />
+    )
   }
 
   return (
@@ -164,7 +214,11 @@ const TicketBoard = ({ filters }: { filters: TicketBoardFilters }) => {
         }}
       />
 
-      <TicketDetailSheet ticketId={openTicketId} onClose={() => setOpenTicketId(null)} />
+      <TicketDetailSheet
+        ticketId={openTicketId}
+        onClose={() => setOpenTicketId(null)}
+        onOpenTicket={setOpenTicketId}
+      />
     </>
   )
 }

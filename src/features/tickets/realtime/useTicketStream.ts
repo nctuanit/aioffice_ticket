@@ -46,6 +46,7 @@ const useTicketStream = () => {
   const { t } = useTranslation("tickets")
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
   const setStatus = useTicketStreamStore((state) => state.setStatus)
+  const bumpUnseen = useTicketStreamStore((state) => state.bumpUnseen)
   /** Latest render's callbacks, so the connection is not torn down on language change. */
   const handlers = useRef({ t, navigate })
 
@@ -94,6 +95,14 @@ const useTicketStream = () => {
         pending.clear()
       }, INVALIDATE_DEBOUNCE_MS)
       if (event.type === "ticket.created" && event.actor === "REQUESTER") announce(event)
+      // tab title badge: count what a customer did while nobody was looking
+      if (
+        document.visibilityState === "hidden" &&
+        event.actor === "REQUESTER" &&
+        (event.type === "ticket.created" || event.type === "ticket.message")
+      ) {
+        bumpUnseen()
+      }
     }
 
     void runTicketStream({
@@ -116,7 +125,7 @@ const useTicketStream = () => {
       clearTimeout(flushTimer)
       setStatus("idle")
     }
-  }, [isAuthenticated, queryClient, setStatus])
+  }, [isAuthenticated, queryClient, setStatus, bumpUnseen])
 }
 
 export { useTicketStream }

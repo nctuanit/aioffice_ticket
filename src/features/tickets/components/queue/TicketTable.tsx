@@ -13,16 +13,8 @@ import {
 import { ParticipantAvatars } from "@/features/tickets/components/ParticipantAvatars"
 import { ExpiryCountdown, RelativeTime, UserAvatar } from "@/features/tickets/components/TicketMeta"
 import type { Ticket } from "@/features/tickets/types/ticket.types"
+import { customerReplied } from "@/features/tickets/utils/ticket-signals"
 import { cn } from "@/lib/utils"
-
-/** The opening message also sets `lastMessageBy = REQUESTER`; only a later message counts as a reply. */
-const OPENING_MESSAGE_SLACK_MS = 5_000
-
-const customerReplied = (ticket: Ticket) =>
-  ticket.lastMessageBy === "REQUESTER" &&
-  Boolean(ticket.firstHandledAt) &&
-  Boolean(ticket.lastMessageAt) &&
-  new Date(ticket.lastMessageAt as string).getTime() - new Date(ticket.createdAt).getTime() > OPENING_MESSAGE_SLACK_MS
 
 const CustomerRepliedBadge = ({ ticket }: { ticket: Ticket }) => {
   const { t } = useTranslation("tickets")

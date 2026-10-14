@@ -1,6 +1,8 @@
 import { History } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import { RelativeTime } from "@/features/tickets/components/TicketMeta"
 import { useAssignees, useTicketEvents } from "@/features/tickets/hooks/useTicketQueries"
 import type { TicketEvent, UserSummary } from "@/features/tickets/types/ticket.types"
@@ -65,7 +67,25 @@ const TicketHistory = ({ ticketId }: { ticketId: string }) => {
         <span className="ml-auto text-xs font-normal text-muted-foreground">{items.length || ""}</span>
       </summary>
       <ol className="flex flex-col gap-3 border-t border-border px-4 py-3">
-        {events.isPending ? <li className="text-sm text-muted-foreground">{t("common:loading")}</li> : null}
+        {events.isPending ? (
+          <li aria-busy="true" className="flex flex-col gap-2">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-3 w-1/3" />
+            <Skeleton className="h-4 w-2/3" />
+            <Skeleton className="h-3 w-1/4" />
+          </li>
+        ) : null}
+        {events.isError ? (
+          <li role="alert" className="flex flex-wrap items-center gap-2 text-sm text-destructive">
+            {t("history.load_failed")}
+            <Button variant="ghost" size="sm" className="min-h-11" onClick={() => void events.refetch()}>
+              {t("common:retry")}
+            </Button>
+          </li>
+        ) : null}
+        {events.isSuccess && items.length === 0 ? (
+          <li className="text-sm text-muted-foreground">{t("history.empty")}</li>
+        ) : null}
         {items.map((event) => (
           <li key={event.id} className="flex flex-col gap-0.5 text-sm">
             <span className="text-foreground">{describe(event)}</span>

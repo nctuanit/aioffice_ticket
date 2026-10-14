@@ -24,12 +24,47 @@ const ticketListSearchSchema = z.object({
   source: z.enum(TICKET_SOURCES).optional().catch(undefined),
   q: z.string().trim().min(1).max(200).optional().catch(undefined),
   page: z.coerce.number().int().min(1).optional().catch(undefined),
+  /**
+   * "Customer replied" quick filter. Client-side only (the list API has no such filter):
+   * it narrows the tickets already loaded on screen and is never sent to the backend.
+   */
+  replied: z.boolean().optional().catch(undefined),
 })
 
 type TicketListSearch = z.infer<typeof ticketListSearchSchema>
 
-/** Filters shared by the list and the board (everything except view / status / page). */
-type TicketBoardFilters = Omit<TicketListSearch, "view" | "status" | "page">
+/** Server-side filters shared by the list and the board (everything except view / status / page / replied). */
+type TicketBoardFilters = Omit<TicketListSearch, "view" | "status" | "page" | "replied">
+
+/** A change to the URL filters (view and page are handled by the caller). */
+type FilterPatch = Partial<Omit<TicketListSearch, "view" | "page">>
+
+/** Patch that resets every filter. */
+const CLEAR_ALL_FILTERS: FilterPatch = {
+  q: undefined,
+  status: undefined,
+  assignee: undefined,
+  participant: undefined,
+  category: undefined,
+  productModule: undefined,
+  priority: undefined,
+  source: undefined,
+  replied: undefined,
+}
+
+/** Any filter set (status counts only where the status filter is shown). */
+const hasActiveFilters = (search: TicketListSearch, includeStatus = true) =>
+  Boolean(
+    search.q ||
+      search.assignee ||
+      search.participant ||
+      search.category ||
+      search.productModule ||
+      search.priority ||
+      search.source ||
+      search.replied ||
+      (includeStatus && search.status),
+  )
 
 const pickBoardFilters = (search: TicketListSearch): TicketBoardFilters => ({
   assignee: search.assignee,
@@ -41,4 +76,12 @@ const pickBoardFilters = (search: TicketListSearch): TicketBoardFilters => ({
   q: search.q,
 })
 
-export { pickBoardFilters, ticketListSearchSchema, type TicketBoardFilters, type TicketListSearch }
+export {
+  CLEAR_ALL_FILTERS,
+  hasActiveFilters,
+  pickBoardFilters,
+  ticketListSearchSchema,
+  type FilterPatch,
+  type TicketBoardFilters,
+  type TicketListSearch,
+}

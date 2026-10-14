@@ -10,7 +10,14 @@
     "no_match_body": "Try removing a filter or changing the search term.",
     "unassigned": "Unassigned",
     "customer_replied": "Customer replied",
-    "title_watching": "Tickets I follow"
+    "title_watching": "Tickets I follow",
+    "replied_empty_title": "No ticket on this page has a new customer reply",
+    "replied_empty_body": "This filter only looks at the tickets on the current page. Try another page or remove the filter.",
+    "remove_replied": "Remove \"Customer replied\"",
+    "page_empty_title": "This page has no tickets left",
+    "page_empty_body": "The list changed since you opened this page.",
+    "first_page": "Go to the first page",
+    "reload": "Reload"
   },
   "view": {
     "label": "View",
@@ -67,7 +74,8 @@
       "outside": "Ticket {{number}} is not over a column.",
       "dropped": "Dropped ticket {{number}} into {{status}}.",
       "cancelled": "Dragging ticket {{number}} was cancelled."
-    }
+    },
+    "replied_empty_body": "None of the cards shown has a new customer reply. This filter only looks at the cards loaded on the board."
   },
   "detail": {
     "title": "Ticket details",
@@ -85,7 +93,25 @@
     "move_to_status": "→ {{status}}",
     "you": "you",
     "info": "Ticket info",
-    "history": "History"
+    "history": "History",
+    "back_to_queue": "Back to the queue",
+    "queue_nav": "Move between tickets of the queue",
+    "queue_position": "{{index}} / {{total}}",
+    "prev_ticket": "Previous ticket",
+    "next_ticket": "Next ticket",
+    "copy_number": "Copy number",
+    "copy_number_label": "Copy ticket number {{number}}",
+    "copy_link": "Copy link",
+    "copy_link_label": "Copy link to ticket {{number}}",
+    "copied_number": "Copied {{number}}",
+    "copied_link": "Ticket link copied",
+    "copy_failed": "Could not copy. Select the text and copy it manually.",
+    "already_assigned": "This ticket already has an assignee.",
+    "show_more": "Show more",
+    "show_less": "Show less",
+    "new_messages": "New messages",
+    "new_messages_label_one": "{{count}} new message, scroll to the latest",
+    "new_messages_label_other": "{{count}} new messages, scroll to the latest"
   },
   "composer": {
     "label": "Write a message",
@@ -99,7 +125,9 @@
     "send_reply": "Send reply",
     "save_note": "Save note",
     "sending": "Sending…",
-    "locked": "The ticket is \"{{status}}\", so no more messages can be sent."
+    "locked": "The ticket is \"{{status}}\", so no more messages can be sent.",
+    "draft_saved": "Draft saved",
+    "has_draft": "Has a draft"
   },
   "toast": {
     "claimed": "You claimed ticket {{number}}",
@@ -122,7 +150,9 @@
     "system": "System",
     "someone": "A staff member",
     "participant_added": "Tagged {{name}}",
-    "participant_removed": "Untagged {{name}}"
+    "participant_removed": "Untagged {{name}}",
+    "empty": "No changes yet.",
+    "load_failed": "Could not load the history."
   },
   "expiry": {
     "hours_left_one": "{{count}} hour left",
@@ -278,5 +308,81 @@
     "new_ticket": "New ticket {{number}} — {{subject}}",
     "open": "Open",
     "notification_title": "New ticket {{number}}"
+  },
+  "quick_filters": {
+    "label": "Quick filters",
+    "unassigned": "Unassigned",
+    "unassigned_hint": "Tickets nobody has claimed",
+    "mine": "Mine",
+    "mine_hint": "Tickets assigned to you",
+    "watching": "I follow",
+    "watching_hint": "Tickets you are tagged on",
+    "expiring": "Expiring soon",
+    "expiring_hint": "New unclaimed tickets, nearest 48-hour deadline first",
+    "replied": "Customer replied",
+    "replied_hint": "Only filters the tickets currently shown (this page or board), not the whole queue",
+    "this_page": "this page"
+  },
+  "unsent": {
+    "title": "Unsent message",
+    "body": "What you are writing is saved as a draft in this browser and comes back when you reopen the ticket. Unsent attachments are not kept.",
+    "stay": "Stay",
+    "leave": "Leave anyway"
+  },
+  "canned": {
+    "menu": "Quick replies",
+    "hint": "Inserted at the cursor",
+    "customer_fallback": "there",
+    "items": {
+      "greeting": {
+        "label": "Greeting",
+        "body": "Hi {{customerName}}, this is AI SUPER OFFICE support. We have received your request {{ticketNumber}}."
+      },
+      "ask_version": {
+        "label": "Ask for app version and OS",
+        "body": "Could you tell us which app version you are using and your operating system (Windows / macOS, with its version)? That helps us check precisely."
+      },
+      "ask_screenshot": {
+        "label": "Ask for a screenshot / video",
+        "body": "Could you send us a screenshot or a short video of the steps that lead to the problem, so we can reproduce it?"
+      },
+      "investigating": {
+        "label": "We are investigating",
+        "body": "We have logged the issue in ticket {{ticketNumber}} and are looking into it with our engineering team. We will update you as soon as we know more."
+      },
+      "fixed_update": {
+        "label": "Fixed, please update",
+        "body": "We have fixed this issue. Please update the app to the latest version and try again."
+      },
+      "closing": {
+        "label": "Closing",
+        "body": "If you need anything else, just reply in ticket {{ticketNumber}}. Thank you for using AI SUPER OFFICE!"
+      }
+    }
+  },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "description": "Shortcuts are ignored while you are typing in a field.",
+    "with_key": "{{label}} ({{key}})",
+    "then": "then",
+    "or": "or",
+    "groups": {
+      "general": "General",
+      "detail": "In a ticket"
+    },
+    "items": {
+      "search": "Search tickets",
+      "go_dashboard": "Go to Overview",
+      "go_queue": "Go to the queue (list)",
+      "go_board": "Go to Kanban",
+      "help": "Open this shortcut list",
+      "reply": "Write a reply to the customer",
+      "note": "Write an internal note",
+      "claim": "Claim (when unassigned)",
+      "next": "Next ticket in the queue",
+      "prev": "Previous ticket in the queue",
+      "send": "Send the message being written",
+      "close": "Close the detail panel"
+    }
   }
 }

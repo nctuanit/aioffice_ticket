@@ -10,7 +10,14 @@
     "no_match_body": "Thử bỏ bớt bộ lọc hoặc đổi từ khóa tìm kiếm.",
     "unassigned": "Chưa phân công",
     "customer_replied": "Khách vừa trả lời",
-    "title_watching": "Ticket tôi theo dõi"
+    "title_watching": "Ticket tôi theo dõi",
+    "replied_empty_title": "Không có ticket nào khách vừa trả lời trên trang này",
+    "replied_empty_body": "Bộ lọc này chỉ xét các ticket của trang đang mở. Thử trang khác hoặc bỏ lọc.",
+    "remove_replied": "Bỏ lọc \"Khách vừa trả lời\"",
+    "page_empty_title": "Trang này không còn ticket",
+    "page_empty_body": "Danh sách đã thay đổi từ lúc bạn mở trang này.",
+    "first_page": "Về trang đầu",
+    "reload": "Tải lại"
   },
   "view": {
     "label": "Chế độ xem",
@@ -67,7 +74,8 @@
       "outside": "Ticket {{number}} không ở trên cột nào.",
       "dropped": "Đã thả ticket {{number}} vào cột {{status}}.",
       "cancelled": "Đã hủy kéo ticket {{number}}."
-    }
+    },
+    "replied_empty_body": "Không có thẻ nào đang hiển thị mà khách vừa trả lời. Bộ lọc này chỉ xét các thẻ đã tải trên bảng."
   },
   "detail": {
     "title": "Chi tiết ticket",
@@ -85,7 +93,24 @@
     "move_to_status": "→ {{status}}",
     "you": "bạn",
     "info": "Thông tin ticket",
-    "history": "Lịch sử thay đổi"
+    "history": "Lịch sử thay đổi",
+    "back_to_queue": "Về hàng đợi",
+    "queue_nav": "Chuyển ticket trong hàng đợi",
+    "queue_position": "{{index}} / {{total}}",
+    "prev_ticket": "Ticket trước",
+    "next_ticket": "Ticket sau",
+    "copy_number": "Sao chép mã",
+    "copy_number_label": "Sao chép mã ticket {{number}}",
+    "copy_link": "Sao chép liên kết",
+    "copy_link_label": "Sao chép liên kết tới ticket {{number}}",
+    "copied_number": "Đã sao chép mã {{number}}",
+    "copied_link": "Đã sao chép liên kết ticket",
+    "copy_failed": "Không sao chép được. Hãy chọn và sao chép thủ công.",
+    "already_assigned": "Ticket này đã có người xử lý.",
+    "show_more": "Xem thêm",
+    "show_less": "Thu gọn",
+    "new_messages": "Tin mới",
+    "new_messages_label_other": "{{count}} tin mới, cuộn xuống tin mới nhất"
   },
   "composer": {
     "label": "Soạn phản hồi",
@@ -99,7 +124,9 @@
     "send_reply": "Gửi trả lời",
     "save_note": "Lưu ghi chú",
     "sending": "Đang gửi…",
-    "locked": "Ticket ở trạng thái \"{{status}}\" nên không thể gửi thêm tin nhắn."
+    "locked": "Ticket ở trạng thái \"{{status}}\" nên không thể gửi thêm tin nhắn.",
+    "draft_saved": "Đã lưu nháp",
+    "has_draft": "Có bản nháp"
   },
   "toast": {
     "claimed": "Bạn đã nhận ticket {{number}}",
@@ -122,7 +149,9 @@
     "system": "Hệ thống",
     "someone": "Một nhân viên",
     "participant_added": "Gắn {{name}} theo dõi",
-    "participant_removed": "Bỏ gắn {{name}}"
+    "participant_removed": "Bỏ gắn {{name}}",
+    "empty": "Chưa có thay đổi nào.",
+    "load_failed": "Không tải được lịch sử."
   },
   "expiry": {
     "hours_left_other": "Còn {{count}} giờ",
@@ -273,5 +302,81 @@
     "new_ticket": "Ticket mới {{number}} — {{subject}}",
     "open": "Mở",
     "notification_title": "Ticket mới {{number}}"
+  },
+  "quick_filters": {
+    "label": "Lọc nhanh",
+    "unassigned": "Chưa ai nhận",
+    "unassigned_hint": "Ticket chưa có người xử lý",
+    "mine": "Của tôi",
+    "mine_hint": "Ticket bạn đang xử lý",
+    "watching": "Tôi theo dõi",
+    "watching_hint": "Ticket gắn bạn theo dõi",
+    "expiring": "Sắp hết hạn",
+    "expiring_hint": "Ticket mới chưa ai nhận, hạn 48 giờ gần nhất lên đầu",
+    "replied": "Khách vừa trả lời",
+    "replied_hint": "Chỉ lọc trong các ticket đang hiển thị (trang hoặc bảng hiện tại), không tìm trong toàn bộ hàng đợi",
+    "this_page": "trang này"
+  },
+  "unsent": {
+    "title": "Tin nhắn chưa gửi",
+    "body": "Nội dung đang soạn đã được lưu nháp trên trình duyệt này và sẽ hiện lại khi bạn mở lại ticket. Tệp đính kèm chưa gửi sẽ không được giữ.",
+    "stay": "Ở lại",
+    "leave": "Vẫn rời đi"
+  },
+  "canned": {
+    "menu": "Mẫu trả lời nhanh",
+    "hint": "Chèn vào vị trí con trỏ",
+    "customer_fallback": "anh/chị",
+    "items": {
+      "greeting": {
+        "label": "Lời chào",
+        "body": "Xin chào {{customerName}}, em là nhân viên hỗ trợ AI SUPER OFFICE. Em đã nhận được yêu cầu {{ticketNumber}} của mình."
+      },
+      "ask_version": {
+        "label": "Hỏi phiên bản ứng dụng và hệ điều hành",
+        "body": "Anh/chị cho em biết giúp phiên bản ứng dụng đang dùng và hệ điều hành (Windows / macOS, kèm phiên bản) để em kiểm tra chính xác hơn nhé."
+      },
+      "ask_screenshot": {
+        "label": "Xin ảnh chụp màn hình / video",
+        "body": "Anh/chị gửi giúp em ảnh chụp màn hình hoặc một video ngắn quay lại các bước gặp lỗi để em tái hiện nhé."
+      },
+      "investigating": {
+        "label": "Đang kiểm tra",
+        "body": "Em đã ghi nhận vấn đề trong ticket {{ticketNumber}} và đang cùng đội kỹ thuật kiểm tra. Em sẽ cập nhật cho anh/chị ngay khi có kết quả."
+      },
+      "fixed_update": {
+        "label": "Đã sửa, mời cập nhật",
+        "body": "Bên em đã khắc phục lỗi này. Anh/chị cập nhật ứng dụng lên phiên bản mới nhất rồi thử lại giúp em nhé."
+      },
+      "closing": {
+        "label": "Lời kết",
+        "body": "Nếu cần hỗ trợ thêm, anh/chị cứ trả lời ngay trong ticket {{ticketNumber}} này. Cảm ơn anh/chị đã sử dụng AI SUPER OFFICE!"
+      }
+    }
+  },
+  "shortcuts": {
+    "title": "Phím tắt",
+    "description": "Phím tắt không hoạt động khi bạn đang gõ trong ô nhập liệu.",
+    "with_key": "{{label}} ({{key}})",
+    "then": "rồi",
+    "or": "hoặc",
+    "groups": {
+      "general": "Chung",
+      "detail": "Trong chi tiết ticket"
+    },
+    "items": {
+      "search": "Tìm ticket",
+      "go_dashboard": "Tới Tổng quan",
+      "go_queue": "Tới Hàng đợi (danh sách)",
+      "go_board": "Tới Kanban",
+      "help": "Mở bảng phím tắt này",
+      "reply": "Soạn trả lời khách",
+      "note": "Soạn ghi chú nội bộ",
+      "claim": "Nhận xử lý (khi chưa ai nhận)",
+      "next": "Ticket sau trong hàng đợi",
+      "prev": "Ticket trước trong hàng đợi",
+      "send": "Gửi tin nhắn đang soạn",
+      "close": "Đóng panel chi tiết"
+    }
   }
 }

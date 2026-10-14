@@ -5,6 +5,7 @@ import {
   CalendarDays,
   CheckCircle2,
   Inbox,
+  Keyboard,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -27,7 +28,10 @@ import { useLogoutMutation } from "@/features/auth/hooks/useLogoutMutation"
 import { useAuthStore } from "@/features/auth/stores/auth.store"
 import { LiveIndicator } from "@/features/tickets/components/realtime/LiveIndicator"
 import { NotificationOptIn } from "@/features/tickets/components/realtime/NotificationOptIn"
+import { ShortcutsHelpDialog } from "@/features/tickets/components/shortcuts/ShortcutsHelpDialog"
+import { useGlobalShortcuts } from "@/features/tickets/hooks/useGlobalShortcuts"
 import { useTicketStream } from "@/features/tickets/realtime/useTicketStream"
+import { useTitleBadge } from "@/features/tickets/realtime/useTitleBadge"
 import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher"
 
 type NavItem = {
@@ -36,11 +40,13 @@ type NavItem = {
   search?: Record<string, string>
   icon: typeof Inbox
   adminOnly?: boolean
+  /** `g …` keyboard sequence, shown as a tooltip hint. */
+  shortcut?: string
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { key: "dashboard", to: "/dashboard", icon: LayoutDashboard },
-  { key: "queue", to: "/tickets", icon: Inbox },
+  { key: "dashboard", to: "/dashboard", icon: LayoutDashboard, shortcut: "G D" },
+  { key: "queue", to: "/tickets", icon: Inbox, shortcut: "G Q" },
   { key: "mine", to: "/tickets", search: { assignee: "me" }, icon: UserRound },
   { key: "closed", to: "/tickets", search: { status: "CLOSED" }, icon: CheckCircle2 },
   { key: "calendar", to: "/settings/calendar", icon: CalendarDays, adminOnly: true },
@@ -58,6 +64,7 @@ const SidebarNav = ({ onNavigate }: { onNavigate?: () => void }) => {
           to={item.to}
           search={item.search}
           onClick={onNavigate}
+          title={item.shortcut ? t("tickets:shortcuts.with_key", { label: t(`nav.${item.key}`), key: item.shortcut }) : undefined}
           activeOptions={{ exact: item.to === "/tickets", includeSearch: Boolean(item.search) }}
           className="flex min-h-11 cursor-pointer items-center gap-3 rounded-lg px-3 text-sm font-medium text-sidebar-foreground transition-colors hover:bg-sidebar-active hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring data-[status=active]:bg-sidebar-active data-[status=active]:text-white"
         >
@@ -131,9 +138,14 @@ const UserMenu = () => {
  */
 const HubShellLayout = ({ children }: PropsWithChildren) => {
   const { t } = useTranslation("common")
+  const { t: tTickets } = useTranslation("tickets")
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [shortcutsOpen, setShortcutsOpen] = useState(false)
   // one realtime connection per tab, for as long as the signed-in shell is mounted
   useTicketStream()
+  useTitleBadge()
+  useGlobalShortcuts({ onHelp: () => setShortcutsOpen(true) })
+  const shortcutsLabel = tTickets("shortcuts.with_key", { label: tTickets("shortcuts.title"), key: "?" })
 
   return (
     // Fixed to the viewport: only <main> scrolls (no second, page-level scrollbar).
@@ -177,6 +189,17 @@ const HubShellLayout = ({ children }: PropsWithChildren) => {
           </Button>
           <div className="flex-1" />
           <LiveIndicator />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hidden size-11 sm:inline-flex"
+            aria-label={shortcutsLabel}
+            title={shortcutsLabel}
+            aria-keyshortcuts="?"
+            onClick={() => setShortcutsOpen(true)}
+          >
+            <Keyboard aria-hidden="true" />
+          </Button>
           <NotificationOptIn />
           <LanguageSwitcher />
           <UserMenu />
@@ -187,6 +210,7 @@ const HubShellLayout = ({ children }: PropsWithChildren) => {
           </div>
         </main>
       </div>
+      <ShortcutsHelpDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
     </div>
   )
 }

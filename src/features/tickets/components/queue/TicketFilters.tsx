@@ -13,9 +13,12 @@ import {
   TICKET_SOURCES,
   TICKET_STATUSES,
 } from "@/features/tickets/constants/ticket.constants"
-import type { TicketListSearch } from "@/features/tickets/types/ticket-search"
-
-type FilterPatch = Partial<Omit<TicketListSearch, "view" | "page">>
+import {
+  CLEAR_ALL_FILTERS,
+  hasActiveFilters,
+  type FilterPatch,
+  type TicketListSearch,
+} from "@/features/tickets/types/ticket-search"
 
 type TicketFiltersProps = {
   search: TicketListSearch
@@ -46,16 +49,7 @@ const TicketFilters = ({ search, onChange, showStatus = true }: TicketFiltersPro
     return () => window.clearTimeout(timer)
   }, [query, search.q, onChange])
 
-  const hasFilters = Boolean(
-    search.q ||
-      search.assignee ||
-      search.participant ||
-      search.category ||
-      search.productModule ||
-      search.priority ||
-      search.source ||
-      (showStatus && search.status),
-  )
+  const hasFilters = hasActiveFilters(search, showStatus)
 
   const select = <K extends keyof FilterPatch>(key: K, value: string) =>
     onChange({ [key]: value || undefined } as FilterPatch)
@@ -73,7 +67,9 @@ const TicketFilters = ({ search, onChange, showStatus = true }: TicketFiltersPro
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder={t("filters.search_placeholder")}
-          className="h-10 pl-9"
+          title={t("shortcuts.with_key", { label: t("filters.search_label"), key: "/" })}
+          aria-keyshortcuts="/"
+          className="h-11 pl-9"
           maxLength={200}
         />
       </div>
@@ -165,16 +161,7 @@ const TicketFilters = ({ search, onChange, showStatus = true }: TicketFiltersPro
             size="sm"
             onClick={() => {
               setQuery("")
-              onChange({
-                q: undefined,
-                status: undefined,
-                assignee: undefined,
-                participant: undefined,
-                category: undefined,
-                productModule: undefined,
-                priority: undefined,
-                source: undefined,
-              })
+              onChange(CLEAR_ALL_FILTERS)
             }}
           >
             <X aria-hidden="true" />
