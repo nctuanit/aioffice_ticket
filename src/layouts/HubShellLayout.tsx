@@ -104,7 +104,12 @@ const UserMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-11 gap-2 px-2" aria-label={t("menu.account")}>
+        <Button
+          variant="ghost"
+          className="h-11 gap-2 px-2"
+          aria-label={user ? `${t("menu.account")}: ${user.fullName || user.email}` : t("menu.account")}
+          title={user?.fullName || user?.email}
+        >
           <span className="grid size-8 place-items-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
             {(user?.fullName || user?.email || "?").trim().charAt(0).toUpperCase()}
           </span>
@@ -189,10 +194,12 @@ const HubShellLayout = ({ children }: PropsWithChildren) => {
           sm+: a 3-column grid whose side columns share one minimum, so the search column is
           centred on the header (and, with `scrollbar-gutter` on <main>, on the content column)
           no matter how wide the menu button or the icon cluster are. The minimum is the icon
-          cluster's width: 14rem; 20.5rem from 2xl, where the user's name shows; 17rem while
-          the notification bell is present (the name hides then). Phones keep the flex row.
+          cluster's width, kept small below 2xl (avatar only, language icon only, no shortcuts
+          button): 10rem; 13rem while the notification bell is present; 21rem from 2xl, where the
+          user's name, the language label and the shortcuts button show (17.5rem with the bell,
+          the name hides then). Phones keep the flex row.
         */}
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-card/95 px-3 backdrop-blur sm:grid sm:grid-cols-[minmax(14rem,1fr)_minmax(0,42rem)_minmax(14rem,1fr)] sm:px-6 sm:has-[[data-notify]]:grid-cols-[minmax(17rem,1fr)_minmax(0,42rem)_minmax(17rem,1fr)] 2xl:grid-cols-[minmax(20.5rem,1fr)_minmax(0,42rem)_minmax(20.5rem,1fr)] 2xl:has-[[data-notify]]:grid-cols-[minmax(17rem,1fr)_minmax(0,42rem)_minmax(17rem,1fr)]">
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-card/95 px-3 backdrop-blur sm:grid sm:grid-cols-[minmax(10rem,1fr)_minmax(0,42rem)_minmax(10rem,1fr)] sm:px-6 sm:has-[[data-notify]]:grid-cols-[minmax(13rem,1fr)_minmax(0,42rem)_minmax(13rem,1fr)] 2xl:grid-cols-[minmax(21rem,1fr)_minmax(0,42rem)_minmax(21rem,1fr)] 2xl:has-[[data-notify]]:grid-cols-[minmax(17.5rem,1fr)_minmax(0,42rem)_minmax(17.5rem,1fr)]">
           <Button
             variant="ghost"
             size="icon"
@@ -208,7 +215,7 @@ const HubShellLayout = ({ children }: PropsWithChildren) => {
             <Button
               variant="ghost"
               size="icon"
-              className="hidden size-11 sm:inline-flex"
+              className="hidden size-11 2xl:inline-flex"
               aria-label={shortcutsLabel}
               title={shortcutsLabel}
               aria-keyshortcuts="?"
@@ -217,7 +224,7 @@ const HubShellLayout = ({ children }: PropsWithChildren) => {
               <Keyboard aria-hidden="true" />
             </Button>
             <NotificationOptIn />
-            <LanguageSwitcher />
+            <LanguageSwitcher compact />
             <UserMenu />
           </div>
         </header>

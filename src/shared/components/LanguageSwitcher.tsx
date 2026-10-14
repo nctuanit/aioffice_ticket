@@ -15,9 +15,10 @@ import { cn } from "@/lib/utils"
 
 /**
  * Always-visible language picker (header and sign-in pages). A menu rather than a
- * toggle so more languages can be added without changing the layout.
+ * toggle so more languages can be added without changing the layout. `compact` keeps
+ * only the icon below 2xl (the shell header needs a narrow icon cluster there).
  */
-const LanguageSwitcher = ({ className }: { className?: string }) => {
+const LanguageSwitcher = ({ className, compact = false }: { className?: string; compact?: boolean }) => {
   const { t, i18n } = useTranslation("common")
   const current = resolveAppLanguage(i18n.resolvedLanguage ?? i18n.language)
   const currentOption = LANGUAGE_OPTIONS.find((option) => option.code === current) ?? LANGUAGE_OPTIONS[0]
@@ -27,11 +28,12 @@ const LanguageSwitcher = ({ className }: { className?: string }) => {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className={cn("h-11 gap-1.5 px-2.5", className)}
+          className={cn("h-11 gap-1.5 px-2.5", compact && "w-11 px-0 2xl:w-auto 2xl:px-2.5", className)}
           aria-label={t("language_switch", { language: currentOption.label })}
+          title={compact ? t("language_switch", { language: currentOption.label }) : undefined}
         >
           <Languages aria-hidden="true" />
-          <span className="text-sm font-semibold">{currentOption.shortLabel}</span>
+          <span className={cn("text-sm font-semibold", compact && "hidden 2xl:inline")}>{currentOption.shortLabel}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-44">
