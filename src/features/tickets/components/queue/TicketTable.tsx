@@ -1,9 +1,10 @@
-import type { MouseEvent } from "react"
+import type { MouseEvent, ReactNode } from "react"
 
 import { Link, useNavigate } from "@tanstack/react-router"
-import { MessageCircleReply } from "lucide-react"
+import { ArrowDown, ArrowUp, ChevronsUpDown, MessageCircleReply } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
+import { NativeSelect } from "@/components/ui/native-select"
 import {
   PriorityIndicator,
   ProductModuleBadge,
@@ -14,6 +15,13 @@ import { ParticipantAvatars } from "@/features/tickets/components/ParticipantAva
 import { ExpiryCountdown, RelativeTime, UserAvatar } from "@/features/tickets/components/TicketMeta"
 import type { Ticket } from "@/features/tickets/types/ticket.types"
 import { customerReplied } from "@/features/tickets/utils/ticket-signals"
+import {
+  nextTicketSort,
+  SORT_DIRECTIONS,
+  TICKET_SORT_FIELDS,
+  type TicketSort,
+  type TicketSortField,
+} from "@/features/tickets/utils/ticket-sort"
 import { cn } from "@/lib/utils"
 
 const CustomerRepliedBadge = ({ ticket }: { ticket: Ticket }) => {
@@ -40,11 +48,78 @@ const Assignee = ({ ticket }: { ticket: Ticket }) => {
   )
 }
 
+type SortProps = {
+  sort: TicketSort
+  onSort: (next: TicketSort) => void
+}
+
+/** Column header that sorts on click; `aria-sort` tells screen readers the current order. */
+const SortableHeader = ({
+  field,
+  label,
+  className,
+  sort,
+  onSort,
+}: SortProps & { field: TicketSortField; label: ReactNode; className?: string }) => {
+  const { t } = useTranslation("tickets")
+  const active = sort.field === field
+  const Icon = !active ? ChevronsUpDown : sort.order === "asc" ? ArrowUp : ArrowDown
+  const next = nextTicketSort(sort, field)
+  return (
+    <th
+      scope="col"
+      aria-sort={active ? (sort.order === "asc" ? "ascending" : "descending") : "none"}
+      className={cn("py-2", className)}
+    >
+      <button
+        type="button"
+        onClick={() => onSort(next)}
+        title={t(`sort.options.${next.field}_${next.order}`)}
+        className={cn(
+          "-mx-2 inline-flex min-h-8 cursor-pointer items-center gap-1 rounded-md px-2 font-medium tracking-wide uppercase transition-colors duration-150 hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+          active && "text-foreground",
+        )}
+      >
+        {label}
+        <Icon aria-hidden="true" className={cn("size-3.5 shrink-0", !active && "opacity-50")} />
+      </button>
+    </th>
+  )
+}
+
+/** Phones have no table header: the same sort as a native select above the cards. */
+const MobileSortSelect = ({ sort, onSort }: SortProps) => {
+  const { t } = useTranslation("tickets")
+  return (
+    <label className="flex items-center gap-2 text-sm text-muted-foreground md:hidden">
+      <span className="shrink-0">{t("sort.label")}</span>
+      <NativeSelect
+        className="flex-1"
+        value={`${sort.field}:${sort.order}`}
+        onChange={(event) => {
+          const [field, order] = event.target.value.split(":") as [TicketSort["field"], TicketSort["order"]]
+          onSort({ field, order })
+        }}
+      >
+        {TICKET_SORT_FIELDS.flatMap((field) =>
+          SORT_DIRECTIONS.map((order) => (
+            <option key={`${field}:${order}`} value={`${field}:${order}`}>
+              {t(`sort.options.${field}_${order}`)}
+            </option>
+          )),
+        )}
+      </NativeSelect>
+    </label>
+  )
+}
+
 /**
  * Queue table (≥ md) and stacked cards (< md). Rows stay links to the detail page so
- * keyboard and middle-click work; the subject is the accessible link text.
+ * keyboard and middle-click work; the subject is the accessible link text. Column
+ * headers (select on phones) change the server-side sort; the "Ticket" column sorts by
+ * creation time, which is also ticket-number order.
  */
-const TicketTable = ({ tickets }: { tickets: Ticket[] }) => {
+const TicketTable = ({ tickets, sort, onSort }: { tickets: Ticket[] } & SortProps) => {
   const { t } = useTranslation("tickets")
   const navigate = useNavigate()
 
@@ -67,11 +142,11 @@ const TicketTable = ({ tickets }: { tickets: Ticket[] }) => {
           <caption className="sr-only">{t("queue.title")}</caption>
           <thead className="border-b border-border bg-muted/60 text-xs font-medium tracking-wide text-muted-foreground uppercase">
             <tr>
-              <th scope="col" className="w-[44%] px-4 py-3">{t("fields.subject")}</th>
-              <th scope="col" className="w-[13%] px-3 py-3">{t("fields.status")}</th>
-              <th scope="col" className="w-[11%] px-3 py-3">{t("fields.priority")}</th>
-              <th scope="col" className="w-[18%] px-3 py-3">{t("fields.assignee")}</th>
-              <th scope="col" className="w-[14%] px-3 py-3">{t("fields.updated")}</th>
+              <SortableHeader field="createdAt" label={t("fields.subject")} className="w-[44%] px-4" sort={sort} onSort={onSort} />
+              <SortableHeader field="status" label={t("fields.status")} className="w-[13%] px-3" sort={sort} onSort={onSort} />
+              <SortableHeader field="priority" label={t("fields.priority")} className="w-[11%] px-3" sort={sort} onSort={onSort} />
+              <SortableHeader field="assignee" label={t("fields.assignee")} className="w-[18%] px-3" sort={sort} onSort={onSort} />
+              <SortableHeader field="updatedAt" label={t("fields.updated")} className="w-[14%] px-3" sort={sort} onSort={onSort} />
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -119,7 +194,8 @@ const TicketTable = ({ tickets }: { tickets: Ticket[] }) => {
         </table>
       </div>
 
-      <ul className="flex flex-col gap-2 md:hidden">
+      <MobileSortSelect sort={sort} onSort={onSort} />
+      <ul className="mt-2 flex flex-col gap-2 md:hidden">
         {tickets.map((ticket) => (
           <li key={ticket.id}>
             <Link

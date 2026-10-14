@@ -384,5 +384,20 @@
       "send": "Send the message being written",
       "close": "Close the detail panel"
     }
+  },
+  "sort": {
+    "label": "Sort",
+    "options": {
+      "createdAt_desc": "Newest tickets first",
+      "createdAt_asc": "Oldest tickets first",
+      "status_asc": "Status: New → Expired",
+      "status_desc": "Status: Expired → New",
+      "priority_desc": "Priority: high → low",
+      "priority_asc": "Priority: low → high",
+      "assignee_asc": "Assignee: A → Z",
+      "assignee_desc": "Assignee: Z → A",
+      "updatedAt_desc": "Recently updated first",
+      "updatedAt_asc": "Least recently updated first"
+    }
   }
 }

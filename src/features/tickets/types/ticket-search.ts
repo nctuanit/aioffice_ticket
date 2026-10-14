@@ -7,6 +7,7 @@ import {
   TICKET_SOURCES,
   TICKET_STATUSES,
 } from "@/features/tickets/constants/ticket.constants"
+import { SORT_DIRECTIONS, TICKET_SORT_FIELDS } from "@/features/tickets/utils/ticket-sort"
 
 /**
  * `/tickets` search params. Filters live in the URL so a filtered view (list or board)
@@ -29,12 +30,15 @@ const ticketListSearchSchema = z.object({
    * it narrows the tickets already loaded on screen and is never sent to the backend.
    */
   replied: z.boolean().optional().catch(undefined),
+  /** List sort; absent → priority high → low (see `resolveTicketSort`). */
+  sort: z.enum(TICKET_SORT_FIELDS).optional().catch(undefined),
+  order: z.enum(SORT_DIRECTIONS).optional().catch(undefined),
 })
 
 type TicketListSearch = z.infer<typeof ticketListSearchSchema>
 
-/** Server-side filters shared by the list and the board (everything except view / status / page / replied). */
-type TicketBoardFilters = Omit<TicketListSearch, "view" | "status" | "page" | "replied">
+/** Server-side filters shared by the list and the board (everything except view / status / page / replied / sort). */
+type TicketBoardFilters = Omit<TicketListSearch, "view" | "status" | "page" | "replied" | "sort" | "order">
 
 /** A change to the URL filters (view and page are handled by the caller). */
 type FilterPatch = Partial<Omit<TicketListSearch, "view" | "page">>

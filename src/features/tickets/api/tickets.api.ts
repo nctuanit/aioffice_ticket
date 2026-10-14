@@ -5,6 +5,7 @@ import {
   type TicketStatusCode,
 } from "@/features/tickets/constants/ticket.constants"
 import type { TicketBoardFilters } from "@/features/tickets/types/ticket-search"
+import type { TicketSortField } from "@/features/tickets/utils/ticket-sort"
 import {
   attachmentDownloadSchema,
   attachmentPresignSchema,
@@ -71,7 +72,8 @@ type ListTicketsParams = TicketBoardFilters & {
   status?: TicketStatusCode
   page?: number
   limit?: number
-  /** Applied to `updatedAt` after the deadline sort. */
+  /** Column to sort by; omitted → nearest intake deadline first, then `updatedAt` by `sortOrder`. */
+  sortBy?: TicketSortField
   sortOrder?: "ASC" | "DESC"
 }
 
@@ -88,6 +90,7 @@ const listTickets = async (params: ListTicketsParams): Promise<PaginatedTickets>
       search: params.q,
       page: params.page ?? 1,
       limit: params.limit ?? QUEUE_PAGE_SIZE,
+      sortBy: params.sortBy,
       sortOrder: params.sortOrder,
     },
   })

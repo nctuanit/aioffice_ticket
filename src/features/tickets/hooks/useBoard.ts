@@ -23,6 +23,7 @@ import { useTicketStreamStore } from "@/features/tickets/realtime/ticket-stream.
 import { useLiveRefetchInterval } from "@/features/tickets/realtime/useLiveRefetchInterval"
 import type { TicketBoardFilters } from "@/features/tickets/types/ticket-search"
 import type { PaginatedTickets, Ticket } from "@/features/tickets/types/ticket.types"
+import { DEFAULT_TICKET_SORT, toApiSort } from "@/features/tickets/utils/ticket-sort"
 import { apiErrorCode, apiErrorMessage } from "@/lib/api-error"
 
 type BoardStatus = (typeof BOARD_COLUMNS)[number]
@@ -81,7 +82,8 @@ const useBoardColumns = (filters: TicketBoardFilters, paused: boolean): BoardCol
           ...filters,
           status,
           limit: BOARD_COLUMN_LIMIT,
-          sortOrder: status === "CLOSED" ? ("DESC" as const) : undefined,
+          // Active columns: highest priority on top. Closed: most recently closed first.
+          ...(status === "CLOSED" ? { sortOrder: "DESC" as const } : toApiSort(DEFAULT_TICKET_SORT)),
         }),
       refetchInterval: paused ? (false as const) : refetchInterval,
       refetchOnWindowFocus: !paused,

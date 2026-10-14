@@ -378,5 +378,20 @@
       "send": "Gửi tin nhắn đang soạn",
       "close": "Đóng panel chi tiết"
     }
+  },
+  "sort": {
+    "label": "Sắp xếp",
+    "options": {
+      "createdAt_desc": "Ticket mới nhất trước",
+      "createdAt_asc": "Ticket cũ nhất trước",
+      "status_asc": "Trạng thái: Mới → Hết hạn",
+      "status_desc": "Trạng thái: Hết hạn → Mới",
+      "priority_desc": "Ưu tiên: cao → thấp",
+      "priority_asc": "Ưu tiên: thấp → cao",
+      "assignee_asc": "Người xử lý: A → Z",
+      "assignee_desc": "Người xử lý: Z → A",
+      "updatedAt_desc": "Cập nhật mới nhất trước",
+      "updatedAt_asc": "Cập nhật cũ nhất trước"
+    }
   }
 }

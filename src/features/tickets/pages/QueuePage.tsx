@@ -23,6 +23,7 @@ import {
   type TicketListSearch,
 } from "@/features/tickets/types/ticket-search"
 import { customerReplied } from "@/features/tickets/utils/ticket-signals"
+import { resolveTicketSort, ticketSortPatch, toApiSort } from "@/features/tickets/utils/ticket-sort"
 import { apiErrorMessage } from "@/lib/api-error"
 import { EmptyState } from "@/shared/components/EmptyState"
 import { ErrorState } from "@/shared/components/ErrorState"
@@ -39,7 +40,14 @@ const TicketListView = ({ search, onPage, onFilters }: TicketListViewProps) => {
   const { t } = useTranslation("tickets")
   const { t: tAll } = useTranslation()
   const page = search.page ?? 1
-  const list = useTicketList({ ...pickBoardFilters(search), status: search.status, page, limit: QUEUE_PAGE_SIZE })
+  const sort = resolveTicketSort(search)
+  const list = useTicketList({
+    ...pickBoardFilters(search),
+    status: search.status,
+    page,
+    limit: QUEUE_PAGE_SIZE,
+    ...toApiSort(sort),
+  })
   const setQueueIds = useQueueNavStore((state) => state.setIds)
 
   const pageTickets = list.data?.data
@@ -140,7 +148,11 @@ const TicketListView = ({ search, onPage, onFilters }: TicketListViewProps) => {
 
   return (
     <div className={list.isPlaceholderData ? "opacity-70 transition-opacity" : undefined}>
-      <TicketTable tickets={tickets} />
+      <TicketTable
+        tickets={tickets}
+        sort={sort}
+        onSort={(next) => onFilters(ticketSortPatch(next))}
+      />
       {pagination}
     </div>
   )
