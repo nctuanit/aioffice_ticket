@@ -115,7 +115,7 @@ const TicketBoard = ({ filters }: { filters: TicketBoardFilters }) => {
         }}
       >
         <div
-          className="-mx-4 flex h-[calc(100svh-15rem)] min-h-[28rem] snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:snap-none lg:px-8"
+          className="-mx-4 flex min-h-[24rem] flex-[1_1_0px] snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:snap-none lg:px-8"
           aria-label={t("board.label")}
           role="region"
         >

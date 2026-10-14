@@ -1,4 +1,6 @@
-import { Link } from "@tanstack/react-router"
+import type { MouseEvent } from "react"
+
+import { Link, useNavigate } from "@tanstack/react-router"
 import { MessageCircleReply } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
@@ -52,6 +54,19 @@ const Assignee = ({ ticket }: { ticket: Ticket }) => {
  */
 const TicketTable = ({ tickets }: { tickets: Ticket[] }) => {
   const { t } = useTranslation("tickets")
+  const navigate = useNavigate()
+
+  // The whole row opens the ticket; the subject link stays for keyboard, middle-click
+  // and "open in new tab". Clicks on links/buttons inside the row keep their own action.
+  const openRow = (event: MouseEvent<HTMLTableRowElement>, ticketId: string) => {
+    if ((event.target as HTMLElement).closest("a, button, input, select, textarea")) return
+    if (window.getSelection()?.toString()) return // the user is selecting text
+    if (event.ctrlKey || event.metaKey) {
+      window.open(`/tickets/${encodeURIComponent(ticketId)}`, "_blank", "noopener")
+      return
+    }
+    void navigate({ to: "/tickets/$ticketId", params: { ticketId } })
+  }
 
   return (
     <>
@@ -69,7 +84,11 @@ const TicketTable = ({ tickets }: { tickets: Ticket[] }) => {
           </thead>
           <tbody className="divide-y divide-border">
             {tickets.map((ticket) => (
-              <tr key={ticket.id} className="group transition-colors duration-150 hover:bg-muted/50">
+              <tr
+                key={ticket.id}
+                onClick={(event) => openRow(event, ticket.id)}
+                className="group cursor-pointer transition-colors duration-150 hover:bg-muted/50"
+              >
                 <td className="px-4 py-3 align-top">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <span className="font-mono">{ticket.ticketNumber}</span>

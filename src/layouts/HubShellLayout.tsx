@@ -131,7 +131,8 @@ const HubShellLayout = ({ children }: PropsWithChildren) => {
   const [drawerOpen, setDrawerOpen] = useState(false)
 
   return (
-    <div className="flex h-full min-h-svh bg-background">
+    // Fixed to the viewport: only <main> scrolls (no second, page-level scrollbar).
+    <div className="flex h-svh overflow-hidden bg-background">
       <a
         href="#hub-content"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-card focus:px-3 focus:py-2 focus:text-sm focus:shadow"
@@ -164,7 +165,7 @@ const HubShellLayout = ({ children }: PropsWithChildren) => {
         </div>
       ) : null}
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-card/95 px-3 backdrop-blur sm:px-6">
           <Button variant="ghost" size="icon" className="lg:hidden" aria-label={t("open_menu")} onClick={() => setDrawerOpen(true)}>
             <Menu aria-hidden="true" />
@@ -173,8 +174,8 @@ const HubShellLayout = ({ children }: PropsWithChildren) => {
           <LanguageSwitcher />
           <UserMenu />
         </header>
-        <main id="hub-content" className="flex-1 overflow-y-auto">
-          <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+        <main id="hub-content" className="relative min-h-0 flex-1 overflow-y-auto">
+          <div className="mx-auto flex min-h-full w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
             {children}
           </div>
         </main>
