@@ -108,8 +108,8 @@ const UserMenu = () => {
           <span className="grid size-8 place-items-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
             {(user?.fullName || user?.email || "?").trim().charAt(0).toUpperCase()}
           </span>
-          {/* fixed slot from xl so the header's icon cluster has a known width (see the header grid); hidden while the bell is shown */}
-          <span className="hidden w-24 truncate text-left text-sm font-medium text-foreground xl:block group-has-[[data-notify]]:hidden">
+          {/* fixed slot from 2xl so the header's icon cluster has a known width (see the header grid); hidden while the bell is shown */}
+          <span className="hidden w-24 truncate text-left text-sm font-medium text-foreground 2xl:block group-has-[[data-notify]]:hidden">
             {user?.fullName || user?.email}
           </span>
         </Button>
@@ -189,10 +189,10 @@ const HubShellLayout = ({ children }: PropsWithChildren) => {
           sm+: a 3-column grid whose side columns share one minimum, so the search column is
           centred on the header (and, with `scrollbar-gutter` on <main>, on the content column)
           no matter how wide the menu button or the icon cluster are. The minimum is the icon
-          cluster's width: 14rem; 20.5rem from xl, where the user's name shows; 17rem while
+          cluster's width: 14rem; 20.5rem from 2xl, where the user's name shows; 17rem while
           the notification bell is present (the name hides then). Phones keep the flex row.
         */}
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-card/95 px-3 backdrop-blur sm:grid sm:grid-cols-[minmax(14rem,1fr)_minmax(0,42rem)_minmax(14rem,1fr)] sm:px-6 sm:has-[[data-notify]]:grid-cols-[minmax(17rem,1fr)_minmax(0,42rem)_minmax(17rem,1fr)] xl:grid-cols-[minmax(20.5rem,1fr)_minmax(0,42rem)_minmax(20.5rem,1fr)] xl:has-[[data-notify]]:grid-cols-[minmax(17rem,1fr)_minmax(0,42rem)_minmax(17rem,1fr)]">
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-card/95 px-3 backdrop-blur sm:grid sm:grid-cols-[minmax(14rem,1fr)_minmax(0,42rem)_minmax(14rem,1fr)] sm:px-6 sm:has-[[data-notify]]:grid-cols-[minmax(17rem,1fr)_minmax(0,42rem)_minmax(17rem,1fr)] 2xl:grid-cols-[minmax(20.5rem,1fr)_minmax(0,42rem)_minmax(20.5rem,1fr)] 2xl:has-[[data-notify]]:grid-cols-[minmax(17rem,1fr)_minmax(0,42rem)_minmax(17rem,1fr)]">
           <Button
             variant="ghost"
             size="icon"

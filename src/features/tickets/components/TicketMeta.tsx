@@ -80,8 +80,8 @@ const UserAvatar = ({
     aria-hidden="true"
     className={cn(
       "grid shrink-0 place-items-center rounded-full bg-primary/10 font-semibold text-primary ring-2 ring-card",
-      size === "xs" && "size-6 text-[10px]",
-      size === "sm" && "size-7 text-[11px]",
+      size === "xs" && "size-6 text-xs",
+      size === "sm" && "size-7 text-xs",
       size === "md" && "size-9 text-xs",
       className,
     )}

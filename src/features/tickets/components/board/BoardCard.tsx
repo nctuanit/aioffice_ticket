@@ -57,7 +57,7 @@ const BoardCardBody = ({ ticket, className }: BoardCardBodyProps) => {
             <UserAvatar user={ticket.assignee} size="xs" />
           ) : (
             <span
-              className="grid size-6 place-items-center rounded-full border border-dashed border-border-strong text-[10px]"
+              className="grid size-6 place-items-center rounded-full border border-dashed border-border-strong text-xs"
               title={t("queue.unassigned")}
             >
               <span className="sr-only">{t("queue.unassigned")}</span>?

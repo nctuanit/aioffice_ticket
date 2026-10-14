@@ -47,7 +47,7 @@ const ParticipantAvatars = ({ participants, max = 3, size = "xs", className }: P
           aria-hidden="true"
           className={cn(
             "grid shrink-0 place-items-center rounded-full bg-muted font-semibold text-muted-foreground ring-2 ring-card tabular-nums",
-            size === "xs" ? "size-6 text-[10px]" : "size-7 text-[11px]",
+            size === "xs" ? "size-6 text-xs" : "size-7 text-xs",
           )}
         >
           +{rest}

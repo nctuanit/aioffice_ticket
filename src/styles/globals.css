@@ -47,6 +47,15 @@
   --color-app-admin-ink: var(--app-admin-ink);
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  /*
+   * Type scale on the 18px root (see `html` below): secondary text (meta, badges, chips,
+   * table headers) is 14px, body text and form controls are 16px; larger steps keep
+   * Tailwind's defaults and scale with the root (base 18, lg 20.25, xl 22.5, 2xl 27…).
+   */
+  --text-xs: 0.7778rem;
+  --text-xs--line-height: calc(1.25 / 0.875);
+  --text-sm: 0.8889rem;
+  --text-sm--line-height: 1.5;
 }
 
 :root {
@@ -137,6 +146,8 @@ body,
 }
 
 html {
+  /* 18px root: every rem-based size (type, spacing, icons, touch targets) grows 12.5% */
+  font-size: 112.5%;
   background: var(--background);
 }
 
@@ -146,7 +157,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
