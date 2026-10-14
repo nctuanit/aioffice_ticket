@@ -21,6 +21,7 @@ bun run dev                     # http://localhost:5180
 | `bun run dev` | Vite dev server (port 5180) |
 | `bun run typecheck` | `tsc -b` |
 | `bun run lint` | ESLint |
+| `bun run check:i18n` | Kiểm tra mọi ngôn ngữ có đủ key như tiếng Việt |
 | `bun run build` | typecheck + `vite build` → `dist/` |
 | `bun run deploy` | build + `wrangler deploy` (Cloudflare Workers static assets, `*.workers.dev` khi chưa có domain) |
 
@@ -40,6 +41,21 @@ src/
   routes/         TanStack Router code-based
   components/ui/  shadcn (new-york, Tailwind v4 tokens trong styles/globals.css)
 ```
+
+## Đa ngôn ngữ
+
+- Hỗ trợ **Tiếng Việt** (mặc định) và **English**.
+- Lần đầu mở, Hub tự chọn theo ngôn ngữ trình duyệt. Người dùng đổi bằng nút ngôn ngữ ở header (và ở góc màn đăng nhập); lựa chọn được lưu trong `localStorage` (`ticket-hub.language`).
+- Thuộc tính `<html lang>` luôn theo ngôn ngữ đang chọn.
+- Mọi request gửi header `x-locale`, nên thông báo lỗi từ backend cũng hiện đúng ngôn ngữ.
+- Ngày giờ và "x phút trước" định dạng theo ngôn ngữ đang chọn.
+- Nội dung ticket do khách / nhân viên viết thì giữ nguyên, không dịch.
+
+**Thêm một ngôn ngữ mới** (ví dụ `ja`):
+
+1. Tạo `src/i18n/locales/ja/` và chép đủ 3 file `common.json`, `auth.json`, `tickets.json` từ `vi/`, rồi dịch. Số nhiều theo chuẩn i18next (`_one`, `_other`, …).
+2. Thêm `"ja"` vào `SUPPORTED_LANGUAGES` và một dòng vào `LANGUAGE_OPTIONS` trong `src/i18n/constants.ts`. File JSON được nạp tự động, không cần import tay.
+3. Chạy `bun run check:i18n`: báo lỗi nếu thiếu hoặc thừa key so với tiếng Việt.
 
 ## Phiên đăng nhập
 

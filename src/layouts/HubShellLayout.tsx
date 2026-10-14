@@ -6,7 +6,6 @@ import {
   CheckCircle2,
   Inbox,
   LayoutDashboard,
-  Languages,
   LogOut,
   Menu,
   UserRound,
@@ -26,8 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useLogoutMutation } from "@/features/auth/hooks/useLogoutMutation"
 import { useAuthStore } from "@/features/auth/stores/auth.store"
-import { changeAppLanguage, LANGUAGE_OPTIONS, resolveAppLanguage } from "@/i18n"
-import { cn } from "@/lib/utils"
+import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher"
 
 type NavItem = {
   key: "dashboard" | "queue" | "mine" | "closed" | "calendar"
@@ -82,11 +80,10 @@ const Brand = () => {
 
 const UserMenu = () => {
   const { t } = useTranslation("auth")
-  const { t: tCommon, i18n } = useTranslation("common")
+  const { t: tCommon } = useTranslation("common")
   const navigate = useNavigate()
   const user = useAuthStore((state) => state.user)
   const logoutMutation = useLogoutMutation()
-  const currentLanguage = resolveAppLanguage(i18n.resolvedLanguage ?? i18n.language)
 
   const logout = async () => {
     await logoutMutation.mutateAsync().catch(() => undefined)
@@ -115,21 +112,6 @@ const UserMenu = () => {
             </Badge>
           ) : null}
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuLabel className="flex items-center gap-2 text-xs font-normal text-slate-500">
-          <Languages aria-hidden="true" className="size-3.5" />
-          {tCommon("language")}
-        </DropdownMenuLabel>
-        {LANGUAGE_OPTIONS.map((option) => (
-          <DropdownMenuItem
-            key={option.code}
-            className={cn("cursor-pointer", option.code === currentLanguage && "font-semibold text-primary")}
-            aria-current={option.code === currentLanguage ? "true" : undefined}
-            onSelect={() => void changeAppLanguage(option.code)}
-          >
-            {option.label}
-          </DropdownMenuItem>
-        ))}
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive" onSelect={() => void logout()}>
           <LogOut aria-hidden="true" className="size-4" />
@@ -188,6 +170,7 @@ const HubShellLayout = ({ children }: PropsWithChildren) => {
             <Menu aria-hidden="true" />
           </Button>
           <div className="flex-1" />
+          <LanguageSwitcher />
           <UserMenu />
         </header>
         <main id="hub-content" className="flex-1 overflow-y-auto">

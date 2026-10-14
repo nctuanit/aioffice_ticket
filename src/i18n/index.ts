@@ -26,7 +26,11 @@ const applyDocumentLanguage = (language: AppLanguage) => {
 
 const changeAppLanguage = async (language: AppLanguage) => {
   await i18n.changeLanguage(language)
-  window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language)
+  try {
+    window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language)
+  } catch {
+    // storage blocked (private mode): the choice still applies to this tab
+  }
   applyDocumentLanguage(language)
 }
 

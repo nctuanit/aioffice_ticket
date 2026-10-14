@@ -35,5 +35,6 @@
     "summary": "Page {{page}} of {{totalPages}} · {{total}} tickets",
     "prev": "Previous",
     "next": "Next"
-  }
+  },
+  "language_switch": "Change language (current: {{language}})"
 }

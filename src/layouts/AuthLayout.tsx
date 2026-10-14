@@ -2,12 +2,17 @@ import type { PropsWithChildren } from "react"
 
 import { useTranslation } from "react-i18next"
 
+import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher"
+
 /** Centered card on a quiet background for login and access pages. */
 const AuthLayout = ({ children }: PropsWithChildren) => {
   const { t } = useTranslation("common")
 
   return (
-    <main className="min-h-svh overflow-y-auto bg-background px-4 py-8 sm:px-6">
+    <main className="relative min-h-svh overflow-y-auto bg-background px-4 py-8 sm:px-6">
+      <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
+        <LanguageSwitcher />
+      </div>
       <div className="mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-md flex-col items-center justify-center gap-6">
         <div className="flex items-center gap-3">
           <div className="grid size-10 place-items-center rounded-xl bg-primary text-primary-foreground">

@@ -35,5 +35,6 @@
     "summary": "Trang {{page}}/{{totalPages}} · {{total}} ticket",
     "prev": "Trước",
     "next": "Sau"
-  }
+  },
+  "language_switch": "Đổi ngôn ngữ (hiện tại: {{language}})"
 }

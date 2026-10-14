@@ -1,21 +1,26 @@
-import authEn from "@/i18n/locales/en/auth.json"
-import commonEn from "@/i18n/locales/en/common.json"
-import ticketsEn from "@/i18n/locales/en/tickets.json"
-import authVi from "@/i18n/locales/vi/auth.json"
-import commonVi from "@/i18n/locales/vi/common.json"
-import ticketsVi from "@/i18n/locales/vi/tickets.json"
+import type { Resource } from "i18next"
 
-const resources = {
-  vi: {
-    common: commonVi,
-    auth: authVi,
-    tickets: ticketsVi,
-  },
-  en: {
-    common: commonEn,
-    auth: authEn,
-    tickets: ticketsEn,
-  },
-} as const
+import { I18N_NAMESPACES, SUPPORTED_LANGUAGES } from "@/i18n/constants"
+
+/**
+ * Every `locales/<language>/<namespace>.json` is bundled automatically, so adding a
+ * language means: add its folder with one file per namespace, then list it in
+ * `SUPPORTED_LANGUAGES` / `LANGUAGE_OPTIONS` (`@/i18n/constants`).
+ * `bun run check:i18n` fails when a language is missing keys.
+ */
+const files = import.meta.glob<Record<string, unknown>>("./locales/*/*.json", {
+  eager: true,
+  import: "default",
+})
+
+const resources: Resource = {}
+
+for (const language of SUPPORTED_LANGUAGES) {
+  resources[language] = {}
+  for (const namespace of I18N_NAMESPACES) {
+    const bundle = files[`./locales/${language}/${namespace}.json`]
+    if (bundle) resources[language][namespace] = bundle
+  }
+}
 
 export { resources }
