@@ -8,6 +8,7 @@ import type {
   TicketSource,
   TicketStatus,
 } from "@/features/tickets/types/ticket.types"
+import { moduleTone } from "@/features/tickets/utils/module-tone"
 import { cn } from "@/lib/utils"
 
 type BadgeVariant = "default" | "neutral" | "success" | "warning" | "destructive" | "outline" | "progress"
@@ -75,10 +76,17 @@ const PriorityIndicator = ({
   )
 }
 
+/** Outline badge in the app's identity colour with a solid dot; the name stays, so colour is never the only signal. */
 const ProductModuleBadge = ({ module }: { module?: TicketProductModule | null }) => {
   const { t } = useTranslation("tickets")
   if (!module) return null
-  return <Badge variant="neutral">{t(`module.${module}`)}</Badge>
+  const tone = moduleTone(module)
+  return (
+    <Badge variant="outline" className={tone.badge}>
+      <span aria-hidden="true" className={cn("size-1.5 shrink-0 rounded-full", tone.dot)} />
+      {t(`module.${module}`)}
+    </Badge>
+  )
 }
 
 const SourceIcon = ({ source }: { source: TicketSource }) => {

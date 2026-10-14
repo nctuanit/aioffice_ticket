@@ -8,6 +8,7 @@ import { ExpiryCountdown } from "@/features/tickets/components/TicketMeta"
 import { BOARD_COLUMNS, TICKET_PRODUCT_MODULES } from "@/features/tickets/constants/ticket.constants"
 import { useTicketList, useTicketStats } from "@/features/tickets/hooks/useTicketQueries"
 import type { TicketStats } from "@/features/tickets/types/ticket.types"
+import { moduleTone } from "@/features/tickets/utils/module-tone"
 import { apiErrorMessage } from "@/lib/api-error"
 import { cn } from "@/lib/utils"
 import { ErrorState } from "@/shared/components/ErrorState"
@@ -39,8 +40,11 @@ const StatTile = ({ label, value, icon: Icon, tone, to }: { label: string; value
   )
 }
 
-/** Single-series bar list: one hue, value printed beside every bar, label in text ink. */
-const BarList = ({ title, rows }: { title: string; rows: Array<{ key: string; label: string; value: number }> }) => {
+/** A row may bring its own bar colour class (`tone`); without it the list is single-hue. */
+type BarRow = { key: string; label: string; value: number; tone?: string }
+
+/** Bar list: one hue unless rows carry a tone, value printed beside every bar, label in text ink. */
+const BarList = ({ title, rows }: { title: string; rows: BarRow[] }) => {
   const { t } = useTranslation("tickets")
   const max = Math.max(1, ...rows.map((row) => row.value))
   const visible = rows.filter((row) => row.value > 0)
@@ -55,7 +59,7 @@ const BarList = ({ title, rows }: { title: string; rows: Array<{ key: string; la
             <li key={row.key} className="grid grid-cols-[8.5rem_minmax(0,1fr)_2.5rem] items-center gap-3 text-sm" title={`${row.label}: ${row.value}`}>
               <span className="truncate text-muted-foreground">{row.label}</span>
               <span aria-hidden="true" className="h-2 overflow-hidden rounded-full bg-muted">
-                <span className="block h-full rounded-full bg-primary" style={{ width: `${(row.value / max) * 100}%` }} />
+                <span className={cn("block h-full rounded-full", row.tone ?? "bg-primary")} style={{ width: `${(row.value / max) * 100}%` }} />
               </span>
               <span className="text-right font-medium tabular-nums text-foreground">{row.value}</span>
             </li>
@@ -143,7 +147,12 @@ const DashboardPage = () => {
             />
             <BarList
               title={t("dashboard.by_module")}
-              rows={TICKET_PRODUCT_MODULES.map((module) => ({ key: module, label: t(`module.${module}`), value: stats.data.byProductModule[module] ?? 0 }))
+              rows={TICKET_PRODUCT_MODULES.map((module) => ({
+                key: module,
+                label: t(`module.${module}`),
+                value: stats.data.byProductModule[module] ?? 0,
+                tone: moduleTone(module).bar,
+              }))
                 .sort((a, b) => b.value - a.value)}
             />
           </div>

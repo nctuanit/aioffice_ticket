@@ -26,6 +26,25 @@
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-active: var(--sidebar-active);
+  /* per-app identity colours (product-module badge, dashboard bars) */
+  --color-app-sens: var(--app-sens);
+  --color-app-sens-ink: var(--app-sens-ink);
+  --color-app-writer: var(--app-writer);
+  --color-app-writer-ink: var(--app-writer-ink);
+  --color-app-sheet: var(--app-sheet);
+  --color-app-sheet-ink: var(--app-sheet-ink);
+  --color-app-slide: var(--app-slide);
+  --color-app-slide-ink: var(--app-slide-ink);
+  --color-app-mail: var(--app-mail);
+  --color-app-mail-ink: var(--app-mail-ink);
+  --color-app-art: var(--app-art);
+  --color-app-art-ink: var(--app-art-ink);
+  --color-app-meet: var(--app-meet);
+  --color-app-meet-ink: var(--app-meet-ink);
+  --color-app-note: var(--app-note);
+  --color-app-note-ink: var(--app-note-ink);
+  --color-app-admin: var(--app-admin);
+  --color-app-admin-ink: var(--app-admin-ink);
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
 }
@@ -59,6 +78,50 @@
   --sidebar: #0f172a;
   --sidebar-foreground: #cbd5e1;
   --sidebar-active: #1e293b;
+  /* Per-app identity colours, taken from the suite's app icons. `--app-*` is the accent
+     (dot, border, 12% tint); `--app-*-ink` is badge text, >= 4.5:1 on that tint over the card. */
+  --app-sens: #7c3aed;
+  --app-sens-ink: #6d28d9;
+  --app-writer: #2563eb;
+  --app-writer-ink: #1d4ed8;
+  --app-sheet: #059669;
+  --app-sheet-ink: #065f46;
+  --app-slide: #ea580c;
+  --app-slide-ink: #9a3412;
+  --app-mail: #4f46e5;
+  --app-mail-ink: #4338ca;
+  --app-art: #db2777;
+  --app-art-ink: #be185d;
+  --app-meet: #0891b2;
+  --app-meet-ink: #155e75;
+  --app-note: #f59e0b;
+  --app-note-ink: #92400e;
+  --app-admin: #64748b;
+  --app-admin-ink: #475569;
+}
+
+/* Dark values for the per-app colours. The Hub has no theme switch yet (only
+   `color-scheme: light`), so this block is inert until a `data-theme` toggle lands;
+   inks are checked at >= 4.5:1 on the 12% tint over a #0f172a card. */
+[data-theme="dark"] {
+  --app-sens: #a78bfa;
+  --app-sens-ink: #c4b5fd;
+  --app-writer: #60a5fa;
+  --app-writer-ink: #93c5fd;
+  --app-sheet: #34d399;
+  --app-sheet-ink: #6ee7b7;
+  --app-slide: #fb923c;
+  --app-slide-ink: #fdba74;
+  --app-mail: #818cf8;
+  --app-mail-ink: #a5b4fc;
+  --app-art: #f472b6;
+  --app-art-ink: #f9a8d4;
+  --app-meet: #22d3ee;
+  --app-meet-ink: #67e8f9;
+  --app-note: #fbbf24;
+  --app-note-ink: #fcd34d;
+  --app-admin: #94a3b8;
+  --app-admin-ink: #cbd5e1;
 }
 
 * {
