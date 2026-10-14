@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { TicketBoard } from "@/features/tickets/components/board/TicketBoard"
+import { ActiveFilterChips } from "@/features/tickets/components/queue/ActiveFilterChips"
 import { QuickFilters } from "@/features/tickets/components/queue/QuickFilters"
 import { TicketFilters } from "@/features/tickets/components/queue/TicketFilters"
 import { TicketTable } from "@/features/tickets/components/queue/TicketTable"
@@ -166,7 +167,10 @@ const queueTitleKey = (search: TicketListSearch) => {
   return "queue.title"
 }
 
-/** Ticket queue: list (paged table) or Kanban board, sharing one URL-driven filter bar. */
+/**
+ * Ticket queue: list (paged table) or Kanban board. Both share the URL-driven quick filters, the
+ * "Bộ lọc" popover and the active-filter chips; the search box lives in the shell topbar.
+ */
 const QueuePage = () => {
   const { t } = useTranslation("tickets")
   const search = useSearch({ from: "/hub/tickets" })
@@ -192,8 +196,11 @@ const QueuePage = () => {
         actions={<ViewSwitcher value={view} onChange={(next) => void navigate({ search: (prev) => ({ ...prev, view: next, page: undefined }) })} />}
       />
       <div className="flex flex-col gap-3">
-        <QuickFilters search={search} onChange={onFilters} view={view} />
-        <TicketFilters search={search} onChange={onFilters} showStatus={view === "list"} />
+        <div className="flex items-start gap-3">
+          <QuickFilters search={search} onChange={onFilters} view={view} />
+          <TicketFilters search={search} onChange={onFilters} showStatus={view === "list"} className="ml-auto shrink-0" />
+        </div>
+        <ActiveFilterChips search={search} onChange={onFilters} showStatus={view === "list"} />
       </div>
       {view === "board" ? (
         <TicketBoard

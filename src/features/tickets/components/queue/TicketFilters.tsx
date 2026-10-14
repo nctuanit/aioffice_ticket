@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react"
+import { useId } from "react"
 
-import { Search, X } from "lucide-react"
+import { ListFilter, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { NativeSelect } from "@/components/ui/native-select"
+import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import {
   TICKET_CATEGORIES,
   TICKET_PRIORITIES,
@@ -19,157 +19,178 @@ import {
   type FilterPatch,
   type TicketListSearch,
 } from "@/features/tickets/types/ticket-search"
+import { cn } from "@/lib/utils"
 
 type TicketFiltersProps = {
   search: TicketListSearch
   onChange: (patch: FilterPatch) => void
   /** The board shows statuses as columns, so it hides the status filter. */
   showStatus?: boolean
+  /** Applied to the trigger button. */
+  className?: string
 }
 
-const SEARCH_DEBOUNCE_MS = 300
+type PanelKey = "status" | "assignee" | "participant" | "productModule" | "category" | "priority" | "source"
 
-/** Shared filter bar for the list and the board; every value lives in the URL. */
-const TicketFilters = ({ search, onChange, showStatus = true }: TicketFiltersProps) => {
+type PanelField = {
+  key: PanelKey
+  /** i18n keys (`tickets` namespace) for the field label and its "all" option. */
+  label: string
+  all: string
+  /** `[value, i18n key]` pairs; the empty "all" option is added when rendering. */
+  options: readonly (readonly [value: string, labelKey: string])[]
+}
+
+/**
+ * Selects inside the panel, in display order. Search lives in the topbar and "replied" in the
+ * quick filters, so neither is counted on the trigger; both still appear as chips.
+ */
+const PANEL_FIELDS: readonly PanelField[] = [
+  {
+    key: "status",
+    label: "filters.status",
+    all: "filters.all_statuses",
+    options: TICKET_STATUSES.map((status) => [status, `status.${status}`] as const),
+  },
+  {
+    key: "assignee",
+    label: "filters.assignee",
+    all: "filters.all_assignees",
+    options: [
+      ["me", "filters.assignee_me"],
+      ["none", "filters.assignee_none"],
+    ],
+  },
+  {
+    key: "participant",
+    label: "filters.participant",
+    all: "filters.all_participants",
+    options: [["me", "filters.participant_me"]],
+  },
+  {
+    key: "productModule",
+    label: "filters.module",
+    all: "filters.all_modules",
+    options: TICKET_PRODUCT_MODULES.map((module) => [module, `module.${module}`] as const),
+  },
+  {
+    key: "category",
+    label: "filters.category",
+    all: "filters.all_categories",
+    options: TICKET_CATEGORIES.map((category) => [category, `category.${category}`] as const),
+  },
+  {
+    key: "priority",
+    label: "filters.priority",
+    all: "filters.all_priorities",
+    options: TICKET_PRIORITIES.map((priority) => [priority, `priority.${priority}`] as const),
+  },
+  {
+    key: "source",
+    label: "filters.source",
+    all: "filters.all_sources",
+    options: TICKET_SOURCES.map((source) => [source, `source.${source}`] as const),
+  },
+]
+
+/**
+ * "Bộ lọc" button that opens the filter panel; every value lives in the URL. The trigger counts
+ * the panel filters that are set, while `ActiveFilterChips` shows and removes each one.
+ */
+const TicketFilters = ({ search, onChange, showStatus = true, className }: TicketFiltersProps) => {
   const { t } = useTranslation("tickets")
-  const [query, setQuery] = useState(search.q ?? "")
-  const [syncedQ, setSyncedQ] = useState(search.q)
+  const idPrefix = useId()
+  const titleId = `${idPrefix}-title`
+  const descriptionId = `${idPrefix}-description`
 
-  // Keep the box in sync when the URL changes elsewhere (back button, nav links),
-  // without clobbering what the user is still typing.
-  if (search.q !== syncedQ) {
-    setSyncedQ(search.q)
-    if ((query.trim() || undefined) !== search.q) setQuery(search.q ?? "")
-  }
-
-  useEffect(() => {
-    const next = query.trim() || undefined
-    if (next === search.q) return
-    const timer = window.setTimeout(() => onChange({ q: next }), SEARCH_DEBOUNCE_MS)
-    return () => window.clearTimeout(timer)
-  }, [query, search.q, onChange])
-
+  const fields = PANEL_FIELDS.filter((field) => showStatus || field.key !== "status")
+  const count = fields.filter((field) => search[field.key]).length
   const hasFilters = hasActiveFilters(search, showStatus)
 
   const select = <K extends keyof FilterPatch>(key: K, value: string) =>
     onChange({ [key]: value || undefined } as FilterPatch)
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-3" role="search">
-      <div className="relative">
-        <Search aria-hidden="true" className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-        <label htmlFor="ticket-search" className="sr-only">
-          {t("filters.search_label")}
-        </label>
-        <Input
-          id="ticket-search"
-          type="search"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder={t("filters.search_placeholder")}
-          title={t("shortcuts.with_key", { label: t("filters.search_label"), key: "/" })}
-          aria-keyshortcuts="/"
-          className="h-11 pl-9"
-          maxLength={200}
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
-        {showStatus ? (
-          <NativeSelect
-            aria-label={t("filters.status")}
-            value={search.status ?? ""}
-            onChange={(event) => select("status", event.target.value)}
-          >
-            <option value="">{t("filters.all_statuses")}</option>
-            {TICKET_STATUSES.map((status) => (
-              <option key={status} value={status}>
-                {t(`status.${status}`)}
-              </option>
-            ))}
-          </NativeSelect>
-        ) : null}
-        <NativeSelect
-          aria-label={t("filters.assignee")}
-          value={search.assignee ?? ""}
-          onChange={(event) => select("assignee", event.target.value)}
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          aria-haspopup="dialog"
+          className={cn(
+            "h-11",
+            count > 0 && "border-primary/60 text-primary hover:border-primary hover:text-primary",
+            className,
+          )}
         >
-          <option value="">{t("filters.all_assignees")}</option>
-          <option value="me">{t("filters.assignee_me")}</option>
-          <option value="none">{t("filters.assignee_none")}</option>
-        </NativeSelect>
-        <NativeSelect
-          aria-label={t("filters.participant")}
-          value={search.participant ?? ""}
-          onChange={(event) => select("participant", event.target.value)}
-        >
-          <option value="">{t("filters.all_participants")}</option>
-          <option value="me">{t("filters.participant_me")}</option>
-        </NativeSelect>
-        <NativeSelect
-          aria-label={t("filters.module")}
-          value={search.productModule ?? ""}
-          onChange={(event) => select("productModule", event.target.value)}
-        >
-          <option value="">{t("filters.all_modules")}</option>
-          {TICKET_PRODUCT_MODULES.map((module) => (
-            <option key={module} value={module}>
-              {t(`module.${module}`)}
-            </option>
-          ))}
-        </NativeSelect>
-        <NativeSelect
-          aria-label={t("filters.category")}
-          value={search.category ?? ""}
-          onChange={(event) => select("category", event.target.value)}
-        >
-          <option value="">{t("filters.all_categories")}</option>
-          {TICKET_CATEGORIES.map((category) => (
-            <option key={category} value={category}>
-              {t(`category.${category}`)}
-            </option>
-          ))}
-        </NativeSelect>
-        <NativeSelect
-          aria-label={t("filters.priority")}
-          value={search.priority ?? ""}
-          onChange={(event) => select("priority", event.target.value)}
-        >
-          <option value="">{t("filters.all_priorities")}</option>
-          {TICKET_PRIORITIES.map((priority) => (
-            <option key={priority} value={priority}>
-              {t(`priority.${priority}`)}
-            </option>
-          ))}
-        </NativeSelect>
-        <NativeSelect
-          aria-label={t("filters.source")}
-          value={search.source ?? ""}
-          onChange={(event) => select("source", event.target.value)}
-        >
-          <option value="">{t("filters.all_sources")}</option>
-          {TICKET_SOURCES.map((source) => (
-            <option key={source} value={source}>
-              {t(`source.${source}`)}
-            </option>
-          ))}
-        </NativeSelect>
-      </div>
-      {hasFilters ? (
-        <div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              setQuery("")
-              onChange(CLEAR_ALL_FILTERS)
-            }}
-          >
+          <ListFilter aria-hidden="true" />
+          {t("filters.button")}
+          {count > 0 ? (
+            <>
+              <span
+                aria-hidden="true"
+                className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-xs font-semibold text-primary-foreground"
+              >
+                {count}
+              </span>
+              <span className="sr-only">{t("filters.active_count", { count })}</span>
+            </>
+          ) : null}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="end"
+        aria-labelledby={titleId}
+        aria-describedby={descriptionId}
+        className="relative flex max-h-[var(--radix-popover-content-available-height)] w-[min(calc(100vw-2rem),40rem)] flex-col gap-4"
+      >
+        <div className="flex flex-col gap-1 pr-11">
+          <h2 id={titleId} className="font-display text-base font-semibold text-foreground">
+            {t("filters.panel_title")}
+          </h2>
+          <p id={descriptionId} className="text-sm text-muted-foreground">
+            {t("filters.panel_description")}
+          </p>
+        </div>
+        {/* Only the fields scroll on short viewports; the negative margin keeps focus rings unclipped. */}
+        <div className="-m-1 grid min-h-0 grid-cols-1 gap-3 overflow-y-auto p-1 sm:grid-cols-2">
+          {fields.map((field) => {
+            const id = `${idPrefix}-${field.key}`
+            return (
+              <div key={field.key} className="flex flex-col gap-1.5">
+                <label htmlFor={id} className="text-xs font-medium text-muted-foreground">
+                  {t(field.label)}
+                </label>
+                <NativeSelect
+                  id={id}
+                  value={search[field.key] ?? ""}
+                  onChange={(event) => select(field.key, event.target.value)}
+                >
+                  <option value="">{t(field.all)}</option>
+                  {field.options.map(([value, labelKey]) => (
+                    <option key={value} value={value}>
+                      {t(labelKey)}
+                    </option>
+                  ))}
+                </NativeSelect>
+              </div>
+            )
+          })}
+        </div>
+        <div className="flex justify-end">
+          <Button variant="ghost" size="sm" disabled={!hasFilters} onClick={() => onChange(CLEAR_ALL_FILTERS)}>
             <X aria-hidden="true" />
             {t("filters.clear")}
           </Button>
         </div>
-      ) : null}
-    </div>
+        {/* Last in DOM order so the first select, not this button, takes focus when the panel opens. */}
+        <PopoverClose
+          aria-label={t("filters.close_panel")}
+          className="absolute top-2 right-2 grid size-11 cursor-pointer place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+        >
+          <X aria-hidden="true" className="size-4" />
+        </PopoverClose>
+      </PopoverContent>
+    </Popover>
   )
 }
 

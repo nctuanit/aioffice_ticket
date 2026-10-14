@@ -19,8 +19,8 @@ type QuickFilter = {
 
 /**
  * One-click presets over the URL filters. Each toggles only its own keys, so they combine
- * with each other and with the selects below. "Expiring soon" relies on the API's default
- * sort (nearest deadline first).
+ * with each other and with the selects in the filter popover. "Expiring soon" relies on the
+ * API's default sort (nearest deadline first).
  */
 const QUICK_FILTERS: QuickFilter[] = [
   {
@@ -68,16 +68,17 @@ type QuickFiltersProps = {
   view: "list" | "board"
 }
 
-/** Toggle chips above the filter bar; `aria-pressed` + check mark show the active ones. */
+/** Toggle chips beside the filter button; `aria-pressed` + check mark show the active ones. */
 const QuickFilters = ({ search, onChange, view }: QuickFiltersProps) => {
   const { t } = useTranslation("tickets")
 
   return (
-    // phones: one swipeable row (padding keeps focus rings visible); wider screens wrap
+    // phones: one swipeable row bleeding to the left page edge only, so it stops short of the
+    // filter button and never widens the page (padding keeps focus rings visible); wider screens wrap
     <div
       role="group"
       aria-label={t("quick_filters.label")}
-      className="-mx-4 flex gap-2 overflow-x-auto px-4 py-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
+      className="-ml-4 flex min-w-0 flex-1 gap-2 overflow-x-auto py-1 pr-1 pl-4 sm:ml-0 sm:flex-wrap sm:overflow-visible sm:pr-0 sm:pl-0"
     >
       {QUICK_FILTERS.filter((filter) => !filter.listOnly || view === "list").map((filter) => {
         const active = filter.isActive(search)

@@ -44,7 +44,17 @@
     "clear": "Clear filters",
     "participant": "Followers",
     "all_participants": "Following: all",
-    "participant_me": "Tagged me"
+    "participant_me": "Tagged me",
+    "button": "Filters",
+    "active_count_one": "{{count}} filter on",
+    "active_count_other": "{{count}} filters on",
+    "panel_title": "Filters",
+    "panel_description": "Narrow the queue by status, assignee, app, category, priority or source.",
+    "active_label": "Active filters",
+    "remove": "Remove filter {{label}}",
+    "chip": "{{label}}: {{value}}",
+    "chip_search": "Search: {{q}}",
+    "close_panel": "Close filters"
   },
   "board": {
     "subtitle": "Drag a card to another column to change its status. Only valid columns accept it.",

@@ -44,7 +44,16 @@
     "clear": "Xóa bộ lọc",
     "participant": "Người theo dõi",
     "all_participants": "Theo dõi: tất cả",
-    "participant_me": "Gắn tôi theo dõi"
+    "participant_me": "Gắn tôi theo dõi",
+    "button": "Bộ lọc",
+    "active_count_other": "{{count}} bộ lọc đang bật",
+    "panel_title": "Bộ lọc",
+    "panel_description": "Thu hẹp hàng đợi theo trạng thái, người xử lý, ứng dụng, danh mục, ưu tiên hoặc nguồn.",
+    "active_label": "Bộ lọc đang áp dụng",
+    "remove": "Bỏ bộ lọc {{label}}",
+    "chip": "{{label}}: {{value}}",
+    "chip_search": "Tìm: {{q}}",
+    "close_panel": "Đóng bộ lọc"
   },
   "board": {
     "subtitle": "Kéo thẻ sang cột khác để đổi trạng thái. Chỉ những cột hợp lệ mới nhận thẻ.",

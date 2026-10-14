@@ -28,6 +28,7 @@ import { useLogoutMutation } from "@/features/auth/hooks/useLogoutMutation"
 import { useAuthStore } from "@/features/auth/stores/auth.store"
 import { LiveIndicator } from "@/features/tickets/components/realtime/LiveIndicator"
 import { NotificationOptIn } from "@/features/tickets/components/realtime/NotificationOptIn"
+import { TopbarSearch } from "@/features/tickets/components/search/TopbarSearch"
 import { ShortcutsHelpDialog } from "@/features/tickets/components/shortcuts/ShortcutsHelpDialog"
 import { useGlobalShortcuts } from "@/features/tickets/hooks/useGlobalShortcuts"
 import { useTicketStream } from "@/features/tickets/realtime/useTicketStream"
@@ -187,7 +188,7 @@ const HubShellLayout = ({ children }: PropsWithChildren) => {
           <Button variant="ghost" size="icon" className="lg:hidden" aria-label={t("open_menu")} onClick={() => setDrawerOpen(true)}>
             <Menu aria-hidden="true" />
           </Button>
-          <div className="flex-1" />
+          <TopbarSearch />
           <LiveIndicator />
           <Button
             variant="ghost"

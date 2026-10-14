@@ -7,22 +7,33 @@ import { hasOverlayOutside, isPlainKey, isTypingTarget } from "@/lib/keyboard"
 /** Second key of a `g …` sequence must follow within this window. */
 const SEQUENCE_TIMEOUT_MS = 1_500
 const SEARCH_INPUT_ID = "ticket-search"
+/** Mobile-only button that expands the collapsed topbar search (see `TopbarSearch`). */
+const SEARCH_TOGGLE_ID = "ticket-search-open"
 const FOCUS_RETRY_FRAMES = 30
 
-/** Focuses the queue search box, waiting a few frames for a freshly loaded route. */
-const focusSearch = (attempt = 0) => {
+/**
+ * Focuses the topbar search box. Below `sm` the box is collapsed behind a toggle: when the
+ * input is missing or cannot take focus, press the toggle once and keep trying for a few frames
+ * while the field renders.
+ */
+const focusSearch = (attempt = 0, opened = false) => {
   const input = document.getElementById(SEARCH_INPUT_ID)
   if (input instanceof HTMLInputElement) {
     input.focus()
-    input.select()
-    return
+    if (document.activeElement === input) {
+      input.select()
+      return
+    }
   }
-  if (attempt < FOCUS_RETRY_FRAMES) requestAnimationFrame(() => focusSearch(attempt + 1))
+  const toggle = opened ? null : document.getElementById(SEARCH_TOGGLE_ID)
+  toggle?.click()
+  if (attempt < FOCUS_RETRY_FRAMES) requestAnimationFrame(() => focusSearch(attempt + 1, opened || toggle !== null))
 }
 
 /**
  * App-wide shortcuts (ignored while typing or while a dialog / menu is open):
- * `/` search, `g d` dashboard, `g q` queue list, `g b` board, `?` shortcut help.
+ * `/` focuses the topbar search on any page, `g d` dashboard, `g q` queue list, `g b` board,
+ * `?` shortcut help.
  */
 const useGlobalShortcuts = ({ onHelp }: { onHelp: () => void }) => {
   const navigate = useNavigate()
@@ -66,8 +77,7 @@ const useGlobalShortcuts = ({ onHelp }: { onHelp: () => void }) => {
       }
       if (event.key === "/") {
         event.preventDefault()
-        if (onQueue) focusSearch()
-        else void navigate({ to: "/tickets" }).then(() => focusSearch())
+        focusSearch()
       }
     }
     window.addEventListener("keydown", onKeyDown)

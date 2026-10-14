@@ -68,7 +68,7 @@ open-office chỉ cho phép các origin trong `AUTH_COOKIE_ALLOWED_ORIGINS` (n�
 ## Màn hình
 
 - **Tổng quan** (`/dashboard`): số ticket mới / chưa ai nhận / sắp hết hạn / chờ khách / hết hạn 7 ngày, phân bổ theo trạng thái và ứng dụng, danh sách sắp hết hạn tiếp nhận.
-- **Hàng đợi** (`/tickets`): bộ lọc trên URL (trạng thái, người xử lý, ứng dụng, danh mục, ưu tiên, nguồn, tìm kiếm), hai chế độ xem:
+- **Hàng đợi** (`/tickets`): ô tìm kiếm nằm trên topbar (phím `/` để focus; từ trang khác, Enter nhảy về hàng đợi), các bộ lọc trên URL (trạng thái, người xử lý, ứng dụng, danh mục, ưu tiên, nguồn) gom sau nút "Bộ lọc" kèm chip cho từng bộ lọc đang bật; hai chế độ xem:
   - **Danh sách**: bảng (điện thoại: thẻ), đếm ngược 48 giờ làm việc, phân trang, polling 30 s.
   - **Kanban** (`?view=board`): một cột cho mỗi trạng thái đang hoạt động; kéo thẻ (chuột / cảm ứng) hoặc dùng menu ⋯ "Chuyển sang" (bàn phím) để đổi trạng thái. Chỉ cột hợp lệ theo bảng chuyển trạng thái của staff nhận thẻ; Đã giải quyết / Đã đóng / Hủy cần xác nhận và có thể kèm lời nhắn cho khách. Kéo Mới → Đang xử lý với ticket chưa ai nhận sẽ tự nhận cho người kéo. Cập nhật lạc quan, trả thẻ về chỗ cũ khi backend trả 409. Bấm thẻ mở chi tiết ở panel bên phải.
 - **Chi tiết** (`/tickets/:id`): hội thoại (ghi chú nội bộ nền vàng có nhãn), trả lời khách / ghi chú nội bộ (Ctrl + Enter), nhận xử lý, đổi trạng thái / ưu tiên, phân công (admin) hoặc bỏ nhận (support), thông tin và lịch sử.
