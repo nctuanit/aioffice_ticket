@@ -32,6 +32,8 @@ const NotificationOptIn = () => {
       variant="ghost"
       size="icon"
       className="size-11"
+      // the shell header widens its icon column while this button is present
+      data-notify=""
       aria-label={t("realtime.enable_notifications")}
       title={t("realtime.enable_notifications")}
       onClick={() => void enable()}

@@ -108,7 +108,8 @@ const UserMenu = () => {
           <span className="grid size-8 place-items-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
             {(user?.fullName || user?.email || "?").trim().charAt(0).toUpperCase()}
           </span>
-          <span className="hidden max-w-40 truncate text-left text-sm font-medium text-foreground sm:block">
+          {/* fixed slot from xl so the header's icon cluster has a known width (see the header grid); hidden while the bell is shown */}
+          <span className="hidden w-24 truncate text-left text-sm font-medium text-foreground xl:block group-has-[[data-notify]]:hidden">
             {user?.fullName || user?.email}
           </span>
         </Button>
@@ -184,28 +185,44 @@ const HubShellLayout = ({ children }: PropsWithChildren) => {
       ) : null}
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-card/95 px-3 backdrop-blur sm:px-6">
-          <Button variant="ghost" size="icon" className="lg:hidden" aria-label={t("open_menu")} onClick={() => setDrawerOpen(true)}>
-            <Menu aria-hidden="true" />
-          </Button>
-          <TopbarSearch />
-          <LiveIndicator />
+        {/*
+          sm+: a 3-column grid whose side columns share one minimum, so the search column is
+          centred on the header (and, with `scrollbar-gutter` on <main>, on the content column)
+          no matter how wide the menu button or the icon cluster are. The minimum is the icon
+          cluster's width: 14rem; 20.5rem from xl, where the user's name shows; 17rem while
+          the notification bell is present (the name hides then). Phones keep the flex row.
+        */}
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-card/95 px-3 backdrop-blur sm:grid sm:grid-cols-[minmax(14rem,1fr)_minmax(0,42rem)_minmax(14rem,1fr)] sm:px-6 sm:has-[[data-notify]]:grid-cols-[minmax(17rem,1fr)_minmax(0,42rem)_minmax(17rem,1fr)] xl:grid-cols-[minmax(20.5rem,1fr)_minmax(0,42rem)_minmax(20.5rem,1fr)] xl:has-[[data-notify]]:grid-cols-[minmax(17rem,1fr)_minmax(0,42rem)_minmax(17rem,1fr)]">
           <Button
             variant="ghost"
             size="icon"
-            className="hidden size-11 sm:inline-flex"
-            aria-label={shortcutsLabel}
-            title={shortcutsLabel}
-            aria-keyshortcuts="?"
-            onClick={() => setShortcutsOpen(true)}
+            className="sm:col-start-1 sm:justify-self-start lg:hidden"
+            aria-label={t("open_menu")}
+            onClick={() => setDrawerOpen(true)}
           >
-            <Keyboard aria-hidden="true" />
+            <Menu aria-hidden="true" />
           </Button>
-          <NotificationOptIn />
-          <LanguageSwitcher />
-          <UserMenu />
+          <TopbarSearch />
+          <div className="group ml-auto flex items-center gap-2 sm:col-start-3 sm:ml-0 sm:justify-self-end">
+            <LiveIndicator />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hidden size-11 sm:inline-flex"
+              aria-label={shortcutsLabel}
+              title={shortcutsLabel}
+              aria-keyshortcuts="?"
+              onClick={() => setShortcutsOpen(true)}
+            >
+              <Keyboard aria-hidden="true" />
+            </Button>
+            <NotificationOptIn />
+            <LanguageSwitcher />
+            <UserMenu />
+          </div>
         </header>
-        <main id="hub-content" className="relative min-h-0 flex-1 overflow-y-auto">
+        {/* symmetric scrollbar gutter keeps the content column centred under the header's search column */}
+        <main id="hub-content" className="relative min-h-0 flex-1 overflow-y-auto [scrollbar-gutter:stable_both-edges]">
           <div className="mx-auto flex min-h-full w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
             {children}
           </div>

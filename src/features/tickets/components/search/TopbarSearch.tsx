@@ -20,7 +20,12 @@ const SEARCH_FIELD_ID = "ticket-search-field"
  * - On the queue it drives `?q=` (debounced, every other filter kept, page reset) and mirrors the URL
  *   when `q` changes elsewhere (back button, sidebar links, chip removal). Enter applies at once.
  * - Anywhere else typing is local; Enter opens the queue with the text as `q`.
- * - Below `sm` the field collapses into an icon button and opens over the header row.
+ * - `sm` and up the field fills the middle column of the header grid (see `HubShellLayout`), which
+ *   is what keeps it centred on the content column.
+ * - Below `sm` it collapses into an icon button and opens over the header row.
+ *
+ * Renders as `display: contents`: the toggle and the field are header children (the toggle sits next
+ * to the menu button, the field takes the grid's middle column).
  */
 const TopbarSearch = () => {
   const { t } = useTranslation("tickets")
@@ -98,7 +103,7 @@ const TopbarSearch = () => {
   const label = t("filters.search_label")
 
   return (
-    <div className="flex min-w-0 flex-1 items-center">
+    <div className="contents">
       <Button
         ref={toggleRef}
         type="button"
@@ -118,10 +123,11 @@ const TopbarSearch = () => {
       <div
         id={SEARCH_FIELD_ID}
         className={cn(
-          "min-w-0 flex-1 items-center gap-2",
-          open
-            ? "absolute inset-0 z-10 flex bg-card px-3 motion-safe:animate-[hub-fade-in_150ms_ease-out] sm:static sm:z-auto sm:bg-transparent sm:px-0"
-            : "hidden sm:flex",
+          "min-w-0 items-center gap-2",
+          // phones: hidden until the toggle opens it over the whole header row
+          open ? "absolute inset-0 z-10 flex bg-card px-3 motion-safe:animate-[hub-fade-in_150ms_ease-out]" : "hidden",
+          // sm+: always visible, fills the header grid's middle column
+          "sm:static sm:col-start-2 sm:z-auto sm:flex sm:w-full sm:justify-center sm:bg-transparent sm:px-0 sm:motion-safe:animate-none",
         )}
       >
         <form role="search" className="relative flex w-full max-w-2xl items-center" onSubmit={onSubmit}>
