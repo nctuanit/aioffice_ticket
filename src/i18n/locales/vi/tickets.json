@@ -251,11 +251,11 @@
   },
   "attachments": {
     "attach": "Đính kèm",
-    "limits_hint": "Tối đa 5 tệp PNG / JPEG / WEBP / TXT, mỗi tệp ≤ 10 MB.",
+    "limits_hint": "Tối đa 5 tệp: ảnh PNG / JPEG / WEBP hoặc TXT ≤ 10 MB, video MP4 / WEBM / MOV ≤ 100 MB.",
     "pending_label": "Tệp chờ gửi",
     "uploading": "Đang tải tệp lên…",
     "remove": "Bỏ tệp {{name}}",
-    "wrong_type": "Chỉ nhận PNG, JPEG, WEBP hoặc TXT",
+    "wrong_type": "Chỉ nhận PNG, JPEG, WEBP, TXT, MP4, WEBM hoặc MOV",
     "too_large": "Tệp vượt quá 10 MB",
     "empty_file": "Tệp rỗng",
     "too_many": "Mỗi tin nhắn tối đa {{count}} tệp; các tệp thừa đã bị bỏ.",
@@ -263,7 +263,15 @@
     "fix_failed": "Bỏ tệp lỗi để gửi",
     "download": "Tải {{name}}",
     "open_image": "Mở ảnh {{name}}",
-    "preview_failed": "Không tải được ảnh {{name}}",
-    "list_label_other": "{{count}} tệp đính kèm"
+    "list_label_other": "{{count}} tệp đính kèm",
+    "video_too_large": "Video vượt quá 100 MB",
+    "load_failed": "Không tải được tệp",
+    "retry_load": "Thử tải lại {{name}}",
+    "play_video": "Video {{name}}"
+  },
+  "realtime": {
+    "new_ticket": "Ticket mới {{number}} — {{subject}}",
+    "open": "Mở",
+    "notification_title": "Ticket mới {{number}}"
   }
 }

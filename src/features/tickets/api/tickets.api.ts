@@ -164,14 +164,17 @@ const removeParticipant = async ({ ticketId, userId }: { ticketId: string; userI
 
 type PresignAttachmentInput = { fileName: string; mimeType: string; sizeBytes: number }
 
-/** Step 1/3: the backend records a PENDING attachment and returns a PUT URL (15 min). */
+/** Step 1/3: the backend records a PENDING attachment and returns a PUT URL (15 min, video 30 min). */
 const presignAttachment = async (input: PresignAttachmentInput): Promise<AttachmentPresign> => {
   const { data } = await api.post(TICKET_ENDPOINTS.attachmentsPresign, input)
   return attachmentPresignSchema.parse(data)
 }
 
-/** A 10 MB PUT on a slow link; past this the chip shows an error instead of spinning forever. */
-const UPLOAD_TIMEOUT_MS = 2 * 60_000
+/**
+ * PUT deadline: at least 2 minutes, plus enough for ~64 KB/s, capped at the 30-minute
+ * video URL lifetime. Past it the chip shows an error instead of spinning forever.
+ */
+const uploadTimeoutMs = (bytes: number) => Math.min(30 * 60_000, Math.max(2 * 60_000, (bytes / (64 * 1024)) * 1000))
 
 /** Step 2/3: PUT the bytes straight to storage (no auth header, exact Content-Type). */
 const uploadToPresignedUrl = async (uploadUrl: string, file: File, contentType: string): Promise<void> => {
@@ -179,7 +182,7 @@ const uploadToPresignedUrl = async (uploadUrl: string, file: File, contentType: 
     method: "PUT",
     body: file,
     headers: { "Content-Type": contentType },
-    signal: AbortSignal.timeout(UPLOAD_TIMEOUT_MS),
+    signal: AbortSignal.timeout(uploadTimeoutMs(file.size)),
   })
   if (!response.ok) throw new Error(`upload failed with status ${response.status}`)
 }
@@ -190,7 +193,7 @@ const confirmAttachment = async (attachmentId: string): Promise<TicketAttachment
   return ticketAttachmentSchema.parse(data)
 }
 
-/** Short-lived presigned GET (5 min) after the backend checked access; `inline` for `<img>` previews. */
+/** Short-lived presigned GET (5 min; inline video 30 min) after the backend checked access; `inline` for `<img>` / `<video>`. */
 const getAttachmentDownloadUrl = async (
   ticketId: string,
   attachmentId: string,

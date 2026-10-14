@@ -25,6 +25,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useLogoutMutation } from "@/features/auth/hooks/useLogoutMutation"
 import { useAuthStore } from "@/features/auth/stores/auth.store"
+import { LiveIndicator } from "@/features/tickets/components/realtime/LiveIndicator"
+import { NotificationOptIn } from "@/features/tickets/components/realtime/NotificationOptIn"
+import { useTicketStream } from "@/features/tickets/realtime/useTicketStream"
 import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher"
 
 type NavItem = {
@@ -129,6 +132,8 @@ const UserMenu = () => {
 const HubShellLayout = ({ children }: PropsWithChildren) => {
   const { t } = useTranslation("common")
   const [drawerOpen, setDrawerOpen] = useState(false)
+  // one realtime connection per tab, for as long as the signed-in shell is mounted
+  useTicketStream()
 
   return (
     // Fixed to the viewport: only <main> scrolls (no second, page-level scrollbar).
@@ -171,6 +176,8 @@ const HubShellLayout = ({ children }: PropsWithChildren) => {
             <Menu aria-hidden="true" />
           </Button>
           <div className="flex-1" />
+          <LiveIndicator />
+          <NotificationOptIn />
           <LanguageSwitcher />
           <UserMenu />
         </header>

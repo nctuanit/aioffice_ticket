@@ -1,6 +1,6 @@
 import { useRef, useState, type KeyboardEvent } from "react"
 
-import { Loader2, Lock, Paperclip, Send, X } from "lucide-react"
+import { Film, Loader2, Lock, Paperclip, Send, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   ATTACHMENT_ACCEPT,
   ATTACHMENTS_PER_MESSAGE,
+  isVideoMime,
 } from "@/features/tickets/constants/attachment.constants"
 import {
   FINAL_STATUSES,
@@ -24,6 +25,7 @@ import { cn } from "@/lib/utils"
 const UploadChip = ({ upload, onRemove }: { upload: PendingUpload; onRemove: () => void }) => {
   const { t } = useTranslation("tickets")
   const failed = upload.status === "error"
+  const Icon = isVideoMime(upload.file.type) ? Film : Paperclip
   return (
     <li
       className={cn(
@@ -34,7 +36,7 @@ const UploadChip = ({ upload, onRemove }: { upload: PendingUpload; onRemove: () 
       {upload.status === "uploading" ? (
         <Loader2 aria-hidden="true" className="size-3.5 shrink-0 animate-spin text-muted-foreground" />
       ) : (
-        <Paperclip aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
+        <Icon aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
       )}
       <span className="truncate">{upload.file.name}</span>
       <span className="shrink-0 text-muted-foreground">{formatBytes(upload.file.size)}</span>

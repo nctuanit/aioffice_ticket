@@ -8,9 +8,10 @@ import {
   uploadToPresignedUrl,
 } from "@/features/tickets/api/tickets.api"
 import {
-  ATTACHMENT_MAX_BYTES,
   ATTACHMENTS_PER_MESSAGE,
+  attachmentMaxBytes,
   isAllowedAttachmentMime,
+  isVideoMime,
 } from "@/features/tickets/constants/attachment.constants"
 import { apiErrorMessage } from "@/lib/api-error"
 
@@ -82,8 +83,9 @@ const useAttachmentUpload = () => {
         if (!isAllowedAttachmentMime(file.type)) {
           return { localId, file, status: "error", error: t("attachments.wrong_type") }
         }
-        if (file.size > ATTACHMENT_MAX_BYTES) {
-          return { localId, file, status: "error", error: t("attachments.too_large") }
+        if (file.size > attachmentMaxBytes(file.type)) {
+          const error = t(isVideoMime(file.type) ? "attachments.video_too_large" : "attachments.too_large")
+          return { localId, file, status: "error", error }
         }
         if (file.size === 0) {
           return { localId, file, status: "error", error: t("attachments.empty_file") }

@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react"
+
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
@@ -17,6 +19,8 @@ import {
   type TicketStatusCode,
 } from "@/features/tickets/constants/ticket.constants"
 import { syncTicket } from "@/features/tickets/hooks/useTicketMutations"
+import { useTicketStreamStore } from "@/features/tickets/realtime/ticket-stream.store"
+import { useLiveRefetchInterval } from "@/features/tickets/realtime/useLiveRefetchInterval"
 import type { TicketBoardFilters } from "@/features/tickets/types/ticket-search"
 import type { PaginatedTickets, Ticket } from "@/features/tickets/types/ticket.types"
 import { apiErrorCode, apiErrorMessage } from "@/lib/api-error"
@@ -45,10 +49,30 @@ const visibleTickets = (status: BoardStatus, tickets: Ticket[], now: number) =>
     : tickets
 
 /**
- * One query per column (`GET /admin/tickets?status=…`), polled every 30s except while a
- * card is being dragged, so a refetch never yanks the card out from under the pointer.
+ * One query per column (`GET /admin/tickets?status=…`), refreshed by the realtime stream and
+ * polled (30s, 60s while live) except while a card is being dragged, so a refetch never yanks
+ * the card out from under the pointer. Stream events during a drag only mark the columns
+ * stale; they refetch when the drag ends.
  */
 const useBoardColumns = (filters: TicketBoardFilters, paused: boolean): BoardColumnData[] => {
+  const queryClient = useQueryClient()
+  const setBoardPaused = useTicketStreamStore((state) => state.setBoardPaused)
+  const refetchInterval = useLiveRefetchInterval(QUEUE_REFETCH_INTERVAL_MS)
+
+  const wasPaused = useRef(false)
+  useEffect(() => {
+    setBoardPaused(paused)
+    // drag just ended: pick up stream events that arrived meanwhile (only invalidated columns)
+    if (wasPaused.current && !paused) {
+      void queryClient.refetchQueries(
+        { queryKey: ticketKeys.boards(), type: "active", predicate: (query) => query.state.isInvalidated },
+        { cancelRefetch: false },
+      )
+    }
+    wasPaused.current = paused
+    return () => setBoardPaused(false)
+  }, [paused, queryClient, setBoardPaused])
+
   const results = useQueries({
     queries: BOARD_COLUMNS.map((status) => ({
       queryKey: ticketKeys.boardColumn(status, filters),
@@ -59,7 +83,7 @@ const useBoardColumns = (filters: TicketBoardFilters, paused: boolean): BoardCol
           limit: BOARD_COLUMN_LIMIT,
           sortOrder: status === "CLOSED" ? ("DESC" as const) : undefined,
         }),
-      refetchInterval: paused ? (false as const) : QUEUE_REFETCH_INTERVAL_MS,
+      refetchInterval: paused ? (false as const) : refetchInterval,
       refetchOnWindowFocus: !paused,
     })),
   })

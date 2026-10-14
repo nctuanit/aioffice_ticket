@@ -36,5 +36,13 @@
     "prev": "Trước",
     "next": "Sau"
   },
-  "language_switch": "Đổi ngôn ngữ (hiện tại: {{language}})"
+  "language_switch": "Đổi ngôn ngữ (hiện tại: {{language}})",
+  "realtime": {
+    "live": "Đang cập nhật trực tiếp",
+    "connecting": "Đang kết nối cập nhật trực tiếp…",
+    "offline": "Mất kết nối – tự thử lại",
+    "enable_notifications": "Bật thông báo trình duyệt",
+    "notifications_enabled": "Đã bật thông báo trình duyệt cho ticket mới",
+    "notifications_blocked": "Trình duyệt đang chặn thông báo của trang này"
+  }
 }

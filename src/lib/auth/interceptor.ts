@@ -56,6 +56,21 @@ const refreshSession = async (client: AxiosInstance) => {
   return tokens.accessToken
 }
 
+/**
+ * Runs the shared refresh flow (one refresh at a time via the refresh queue). On failure
+ * the session is cleared and listeners are told it expired. Also used by non-axios
+ * callers such as the realtime ticket stream (fetch) after a 401.
+ */
+const refreshAccessToken = async (client: AxiosInstance): Promise<string> => {
+  try {
+    return await runRefreshTask(() => refreshSession(client))
+  } catch (refreshError) {
+    tokenManager.clearAll()
+    notifySessionExpired()
+    throw refreshError
+  }
+}
+
 const handleUnauthorized = async (
   client: AxiosInstance,
   error: AxiosError,
@@ -73,15 +88,9 @@ const handleUnauthorized = async (
 
   originalRequest._retry = true
 
-  try {
-    const accessToken = await runRefreshTask(() => refreshSession(client))
-    originalRequest.headers.Authorization = `Bearer ${accessToken}`
-    return client(originalRequest)
-  } catch (refreshError) {
-    tokenManager.clearAll()
-    notifySessionExpired()
-    return Promise.reject(refreshError)
-  }
+  const accessToken = await refreshAccessToken(client)
+  originalRequest.headers.Authorization = `Bearer ${accessToken}`
+  return client(originalRequest)
 }
 
 const setupAuthInterceptors = (client: AxiosInstance) => {
@@ -102,4 +111,4 @@ const setupAuthInterceptors = (client: AxiosInstance) => {
   )
 }
 
-export { setupAuthInterceptors }
+export { refreshAccessToken, setupAuthInterceptors }

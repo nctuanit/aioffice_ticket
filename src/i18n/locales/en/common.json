@@ -36,5 +36,13 @@
     "prev": "Previous",
     "next": "Next"
   },
-  "language_switch": "Change language (current: {{language}})"
+  "language_switch": "Change language (current: {{language}})",
+  "realtime": {
+    "live": "Live updates on",
+    "connecting": "Connecting to live updates…",
+    "offline": "Disconnected – retrying",
+    "enable_notifications": "Enable browser notifications",
+    "notifications_enabled": "Browser notifications are on for new tickets",
+    "notifications_blocked": "The browser is blocking notifications for this site"
+  }
 }

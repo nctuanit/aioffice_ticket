@@ -254,11 +254,11 @@
   },
   "attachments": {
     "attach": "Attach",
-    "limits_hint": "Up to 5 files — PNG / JPEG / WEBP / TXT, 10 MB each.",
+    "limits_hint": "Up to 5 files: PNG / JPEG / WEBP images or TXT up to 10 MB, MP4 / WEBM / MOV videos up to 100 MB.",
     "pending_label": "Files to send",
     "uploading": "Uploading…",
     "remove": "Remove {{name}}",
-    "wrong_type": "Only PNG, JPEG, WEBP or TXT",
+    "wrong_type": "Only PNG, JPEG, WEBP, TXT, MP4, WEBM or MOV",
     "too_large": "File is over 10 MB",
     "empty_file": "Empty file",
     "too_many": "At most {{count}} files per message; extra files were dropped.",
@@ -267,8 +267,16 @@
     "fix_failed": "Remove failed files to send",
     "download": "Download {{name}}",
     "open_image": "Open image {{name}}",
-    "preview_failed": "Could not load image {{name}}",
     "list_label_one": "{{count}} attachment",
-    "list_label_other": "{{count}} attachments"
+    "list_label_other": "{{count}} attachments",
+    "video_too_large": "Video is over 100 MB",
+    "load_failed": "Couldn't load file",
+    "retry_load": "Retry loading {{name}}",
+    "play_video": "Video {{name}}"
+  },
+  "realtime": {
+    "new_ticket": "New ticket {{number}} — {{subject}}",
+    "open": "Open",
+    "notification_title": "New ticket {{number}}"
   }
 }

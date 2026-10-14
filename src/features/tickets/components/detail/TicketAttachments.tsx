@@ -1,28 +1,87 @@
-import { useState, type MouseEvent } from "react"
+import { useRef, useState, type MouseEvent } from "react"
 
-import { Download, FileText, Loader2 } from "lucide-react"
+import { Download, FileText, Film, ImageOff, Loader2, RotateCw } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
+import { isImageMime, isVideoMime } from "@/features/tickets/constants/attachment.constants"
 import { useAttachmentDownloadUrl } from "@/features/tickets/hooks/useTicketQueries"
 import type { TicketAttachment } from "@/features/tickets/types/ticket.types"
 import { formatBytes } from "@/features/tickets/utils/format"
 import { apiErrorMessage } from "@/lib/api-error"
 import { cn } from "@/lib/utils"
 
-const isImage = (attachment: TicketAttachment) => attachment.mimeType.startsWith("image/")
+type AttachmentProps = { ticketId: string; attachment: TicketAttachment }
+
+/**
+ * Shown instead of the browser's broken-image / dead-player box once a preview still
+ * fails after the one automatic URL refetch (or the URL itself could not be fetched).
+ */
+const FailedTile = ({
+  attachment,
+  retrying,
+  onRetry,
+  className,
+}: {
+  attachment: TicketAttachment
+  retrying: boolean
+  onRetry: () => void
+  className?: string
+}) => {
+  const { t } = useTranslation("tickets")
+  return (
+    <div
+      role="alert"
+      title={attachment.fileName}
+      className={cn(
+        "flex flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border-strong bg-muted p-2 text-center",
+        className,
+      )}
+    >
+      <ImageOff aria-hidden="true" className="size-5 text-muted-foreground" />
+      <span className="text-xs text-muted-foreground">{t("attachments.load_failed")}</span>
+      <button
+        type="button"
+        onClick={onRetry}
+        disabled={retrying}
+        aria-label={t("attachments.retry_load", { name: attachment.fileName })}
+        className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-md px-3 text-xs font-medium text-primary transition-colors duration-150 hover:bg-card focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-default disabled:opacity-60"
+      >
+        {retrying ? (
+          <Loader2 aria-hidden="true" className="size-3.5 animate-spin motion-reduce:animate-none" />
+        ) : (
+          <RotateCw aria-hidden="true" className="size-3.5" />
+        )}
+        {t("common:retry")}
+      </button>
+    </div>
+  )
+}
+
+const PreviewSkeleton = ({ className }: { className?: string }) => {
+  const { t } = useTranslation("tickets")
+  return (
+    <span className={cn("block animate-pulse rounded-lg bg-muted motion-reduce:animate-none", className)}>
+      <span role="status" className="sr-only">
+        {t("common:loading")}
+      </span>
+    </span>
+  )
+}
 
 /**
  * Image preview: the thumbnail is the (inline) presigned object URL. Presigned URLs
  * live 5 minutes, so a click on a stale link is intercepted: a blank tab is opened
  * synchronously (popup blockers allow that inside the gesture) and pointed at a
- * freshly fetched URL.
+ * freshly fetched URL. A load error refetches the URL once; if that still fails the
+ * fallback tile offers a manual retry.
  */
-const ImageThumbnail = ({ ticketId, attachment }: { ticketId: string; attachment: TicketAttachment }) => {
+const ImageThumbnail = ({ ticketId, attachment }: AttachmentProps) => {
   const { t } = useTranslation("tickets")
   const { t: tAll } = useTranslation()
   const url = useAttachmentDownloadUrl(ticketId, attachment.id, true)
   const [retried, setRetried] = useState(false)
+  const [failed, setFailed] = useState(false)
 
   const onClick = (event: MouseEvent<HTMLAnchorElement>) => {
     if (url.data && !url.isStale) return
@@ -37,29 +96,31 @@ const ImageThumbnail = ({ ticketId, attachment }: { ticketId: string; attachment
     })
   }
 
-  /** A URL that expired while the page sat open: fetch a new one once. */
+  /** A URL that expired while the page sat open: fetch a new one once, then give up visibly. */
   const onError = () => {
-    if (retried) return
+    if (retried) {
+      setFailed(true)
+      return
+    }
     setRetried(true)
     void url.refetch()
   }
 
-  if (url.isError) {
+  const retry = () => {
+    void url.refetch().then(({ data }) => {
+      if (data) {
+        setRetried(false)
+        setFailed(false)
+      }
+    })
+  }
+
+  if (url.isError || failed) {
     return (
-      <span role="alert" className="text-xs text-destructive">
-        {t("attachments.preview_failed", { name: attachment.fileName })}
-      </span>
+      <FailedTile attachment={attachment} retrying={url.isFetching} onRetry={retry} className="size-28" />
     )
   }
-  if (!url.data) {
-    return (
-      <span className="block size-28 animate-pulse rounded-lg bg-muted">
-        <span role="status" className="sr-only">
-          {t("common:loading")}
-        </span>
-      </span>
-    )
-  }
+  if (!url.data) return <PreviewSkeleton className="size-28" />
   return (
     <a
       href={url.data.downloadUrl}
@@ -76,15 +137,16 @@ const ImageThumbnail = ({ ticketId, attachment }: { ticketId: string; attachment
 }
 
 /**
- * Non-image file: name + size; the link is the presigned download URL (served with
- * `Content-Disposition: attachment`). A stale URL is refreshed on click and the
- * download started with `location.assign`, which keeps the page.
+ * Non-image file (and the download link under a video): name + size; the link is the
+ * presigned download URL (served with `Content-Disposition: attachment`). A stale URL
+ * is refreshed on click and the download started with `location.assign`, which keeps the page.
  */
-const FileRow = ({ ticketId, attachment }: { ticketId: string; attachment: TicketAttachment }) => {
+const FileRow = ({ ticketId, attachment }: AttachmentProps) => {
   const { t } = useTranslation("tickets")
   const { t: tAll } = useTranslation()
   const url = useAttachmentDownloadUrl(ticketId, attachment.id)
   const [busy, setBusy] = useState(false)
+  const Icon = isVideoMime(attachment.mimeType) ? Film : FileText
 
   const onClick = (event: MouseEvent<HTMLAnchorElement>) => {
     if (url.data && !url.isStale) return
@@ -108,7 +170,7 @@ const FileRow = ({ ticketId, attachment }: { ticketId: string; attachment: Ticke
         busy && "pointer-events-none opacity-60",
       )}
     >
-      <FileText aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+      <Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
       <span className="truncate">{attachment.fileName}</span>
       <span className="shrink-0 text-xs text-muted-foreground">{formatBytes(attachment.sizeBytes)}</span>
       {busy ? (
@@ -117,6 +179,87 @@ const FileRow = ({ ticketId, attachment }: { ticketId: string; attachment: Ticke
         <Download aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
       )}
     </a>
+  )
+}
+
+/**
+ * Inline video: `<video controls preload="metadata">` on the inline presigned URL (the
+ * browser streams it with Range requests). The `src` is pinned once metadata loads so a
+ * background URL refresh never restarts playback; when the URL expires mid-session the
+ * player errors, a new URL is fetched once and playback resumes where it was. A second
+ * failure shows the fallback tile. The download link sits underneath.
+ */
+const VideoAttachment = ({ ticketId, attachment }: AttachmentProps) => {
+  const { t } = useTranslation("tickets")
+  const url = useAttachmentDownloadUrl(ticketId, attachment.id, true)
+  const [pinned, setPinned] = useState<string>()
+  const [failed, setFailed] = useState(false)
+  const retried = useRef(false)
+  const resumeAt = useRef(0)
+  const src = pinned ?? url.data?.downloadUrl
+
+  const refresh = () =>
+    url.refetch().then(({ data }) => {
+      if (data) {
+        setPinned(data.downloadUrl)
+        setFailed(false)
+      } else setFailed(true)
+    })
+
+  const onError = (event: { currentTarget: HTMLVideoElement }) => {
+    if (retried.current) {
+      setFailed(true)
+      return
+    }
+    retried.current = true
+    resumeAt.current = event.currentTarget.currentTime
+    void refresh()
+  }
+
+  const onLoadedMetadata = (event: { currentTarget: HTMLVideoElement }) => {
+    const video = event.currentTarget
+    if (!pinned) setPinned(video.currentSrc || src)
+    if (resumeAt.current > 0) {
+      video.currentTime = resumeAt.current
+      resumeAt.current = 0
+    }
+  }
+
+  const retry = () => {
+    retried.current = false
+    void refresh()
+  }
+
+  const player =
+    url.isError || failed ? (
+      <FailedTile
+        attachment={attachment}
+        retrying={url.isFetching}
+        onRetry={retry}
+        className="aspect-video w-full"
+      />
+    ) : !src ? (
+      <PreviewSkeleton className="aspect-video w-full" />
+    ) : (
+      <video
+        src={src}
+        controls
+        preload="metadata"
+        playsInline
+        onError={onError}
+        onLoadedMetadata={onLoadedMetadata}
+        aria-label={t("attachments.play_video", { name: attachment.fileName })}
+        className="aspect-video w-full rounded-lg border border-border bg-sidebar"
+      />
+    )
+
+  return (
+    <figure className="flex w-full max-w-md flex-col gap-2">
+      {player}
+      <figcaption className="max-w-full">
+        <FileRow ticketId={ticketId} attachment={attachment} />
+      </figcaption>
+    </figure>
   )
 }
 
@@ -132,8 +275,11 @@ const TicketAttachments = ({
 }) => {
   const { t } = useTranslation("tickets")
   if (!attachments?.length) return null
-  const images = attachments.filter(isImage)
-  const files = attachments.filter((attachment) => !isImage(attachment))
+  const images = attachments.filter((attachment) => isImageMime(attachment.mimeType))
+  const videos = attachments.filter((attachment) => isVideoMime(attachment.mimeType))
+  const files = attachments.filter(
+    (attachment) => !isImageMime(attachment.mimeType) && !isVideoMime(attachment.mimeType),
+  )
 
   return (
     <div
@@ -146,6 +292,15 @@ const TicketAttachments = ({
           {images.map((attachment) => (
             <li key={attachment.id}>
               <ImageThumbnail ticketId={ticketId} attachment={attachment} />
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      {videos.length ? (
+        <ul className="flex flex-col gap-3">
+          {videos.map((attachment) => (
+            <li key={attachment.id} className="flex">
+              <VideoAttachment ticketId={ticketId} attachment={attachment} />
             </li>
           ))}
         </ul>
