@@ -73,6 +73,7 @@
     "confirm_title": "Move to \"{{status}}\"?",
     "confirm_body_resolve": "Ticket {{number}} — {{subject}}. The customer will see the new status in the app.",
     "confirm_body_cancel": "Ticket {{number}} — {{subject}} will be cancelled and can no longer be handled.",
+    "confirm_resolve_media_warning": "Images and videos attached to this ticket will be deleted when it is resolved.",
     "confirm_message_label": "Message to the customer (optional)",
     "confirm_message_placeholder": "For example: We fixed the issue, please update the app.",
     "confirm_message_hint": "Sent as a public reply before the status changes.",
@@ -312,7 +313,8 @@
     "video_too_large": "Video is over 100 MB",
     "load_failed": "Couldn't load file",
     "retry_load": "Retry loading {{name}}",
-    "play_video": "Video {{name}}"
+    "play_video": "Video {{name}}",
+    "purged": "Deleted under the retention policy"
   },
   "realtime": {
     "new_ticket": "New ticket {{number}} — {{subject}}",

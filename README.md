@@ -75,4 +75,5 @@ open-office chỉ cho phép các origin trong `AUTH_COOKIE_ALLOWED_ORIGINS` (n�
 - **Lịch làm việc** (`/settings/calendar`, chỉ admin): ngày làm việc trong tuần và ngày lễ dùng để tính hạn 48 giờ.
 
 - **Đính kèm** (P3): staff đính tệp (PNG / JPEG / WEBP / TXT, ≤ 10 MB, ≤ 5 tệp / tin) vào trả lời hoặc ghi chú: Hub xin URL presign, PUT thẳng lên R2 rồi gọi confirm (backend kiểm kích thước + loại tệp thật); hội thoại hiện thumbnail ảnh và nút tải, link tải là presigned URL 5 phút qua `/admin/tickets/:id/attachments/:attachmentId`.
+  - **Lưu trữ**: ảnh / video bị xóa khi ticket chuyển Đã giải quyết, mọi tệp bị xóa 7 ngày sau khi đóng (nếu không có tin mới); tệp đã xóa hiện ô xám "Đã xóa theo chính sách lưu trữ" (không link tải), hộp xác nhận Đã giải quyết có cảnh báo.
 - **Người theo dõi** (P4b): gắn nhiều admin / support vào một ticket để theo dõi / cùng xử lý (khác người xử lý chính). Avatar xếp chồng trên thẻ Kanban và dòng danh sách; ô tìm-và-gắn trong panel xử lý; bộ lọc "Gắn tôi theo dõi" (`?participant=me`); gõ `@tên` hoặc `@phần-trước-@-email` trong ghi chú nội bộ cũng tự gắn. Khách không bao giờ thấy danh sách này.

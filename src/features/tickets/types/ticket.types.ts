@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+import { ATTACHMENT_PURGE_REASONS, ATTACHMENT_STATUSES } from "@/features/tickets/constants/attachment.constants"
 import {
   TICKET_CATEGORIES,
   TICKET_PRIORITIES,
@@ -25,7 +26,10 @@ const userSummarySchema = z.object({
   role: z.string().optional(),
 })
 
-/** `TicketAttachmentResDto` — metadata only; bytes come through a short-lived download URL. */
+/**
+ * `TicketAttachmentResDto` — metadata only; bytes come through a short-lived download URL.
+ * A PURGED row (retention policy) keeps its metadata but has no file any more.
+ */
 const ticketAttachmentSchema = z.object({
   id: z.uuid(),
   fileName: z.string(),
@@ -33,6 +37,10 @@ const ticketAttachmentSchema = z.object({
   sizeBytes: z.number(),
   messageId: z.uuid().nullable().optional(),
   createdAt: z.string(),
+  /** Servers older than the retention policy omit it: every row they send is attached. */
+  status: z.enum(ATTACHMENT_STATUSES).default("ATTACHED"),
+  purgedAt: nullableDate,
+  purgeReason: z.enum(ATTACHMENT_PURGE_REASONS).nullable().optional(),
 })
 
 const attachmentPresignSchema = z.object({

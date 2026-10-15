@@ -72,6 +72,7 @@
     "confirm_title": "Chuyển sang \"{{status}}\"?",
     "confirm_body_resolve": "Ticket {{number}} — {{subject}}. Khách sẽ thấy trạng thái mới trong ứng dụng.",
     "confirm_body_cancel": "Ticket {{number}} — {{subject}} sẽ bị hủy và không thể xử lý tiếp.",
+    "confirm_resolve_media_warning": "Ảnh và video đính kèm của ticket sẽ bị xóa khi chuyển Đã giải quyết.",
     "confirm_message_label": "Lời nhắn cho khách (không bắt buộc)",
     "confirm_message_placeholder": "Ví dụ: Bên em đã khắc phục lỗi, anh/chị cập nhật ứng dụng giúp em nhé.",
     "confirm_message_hint": "Lời nhắn được gửi như một phản hồi công khai trước khi đổi trạng thái.",
@@ -305,7 +306,8 @@
     "video_too_large": "Video vượt quá 100 MB",
     "load_failed": "Không tải được tệp",
     "retry_load": "Thử tải lại {{name}}",
-    "play_video": "Video {{name}}"
+    "play_video": "Video {{name}}",
+    "purged": "Đã xóa theo chính sách lưu trữ"
   },
   "realtime": {
     "new_ticket": "Ticket mới {{number}} — {{subject}}",

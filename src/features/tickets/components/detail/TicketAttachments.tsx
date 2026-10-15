@@ -1,10 +1,11 @@
 import { useRef, useState, type MouseEvent } from "react"
 
-import { Download, FileText, Film, ImageOff, Loader2, RotateCw } from "lucide-react"
+import { Download, FileText, FileX, Film, ImageOff, Loader2, RotateCw, VideoOff } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
-import { isImageMime, isVideoMime } from "@/features/tickets/constants/attachment.constants"
+import { RelativeTime } from "@/features/tickets/components/TicketMeta"
+import { isImageMime, isPurgedAttachment, isVideoMime } from "@/features/tickets/constants/attachment.constants"
 import { useAttachmentDownloadUrl } from "@/features/tickets/hooks/useTicketQueries"
 import type { TicketAttachment } from "@/features/tickets/types/ticket.types"
 import { formatBytes } from "@/features/tickets/utils/format"
@@ -263,7 +264,42 @@ const VideoAttachment = ({ ticketId, attachment }: AttachmentProps) => {
   )
 }
 
-/** Attachments of one message (or of the opening description). Renders nothing when empty. */
+/**
+ * A file deleted by the retention policy (media once the ticket is resolved, every file 7 days
+ * after it is closed). Only the metadata is left, so this is static: no link, no download-URL
+ * query and no `<img>` / `<video>`, hence no 410 request and no broken preview. The visible
+ * text (name, status, when) is what screen readers read; the icon is decorative.
+ */
+const PurgedTile = ({ attachment }: { attachment: TicketAttachment }) => {
+  const { t } = useTranslation("tickets")
+  // what the file used to be: crossed-out image, video or document
+  const Icon = isImageMime(attachment.mimeType) ? ImageOff : isVideoMime(attachment.mimeType) ? VideoOff : FileX
+  return (
+    <div className="inline-flex min-h-11 max-w-full items-center gap-2 rounded-lg border border-dashed border-border bg-muted px-3 py-1.5 text-muted-foreground">
+      <Icon aria-hidden="true" className="size-4 shrink-0" />
+      <span className="flex min-w-0 flex-col">
+        <span title={attachment.fileName} className="truncate text-sm">
+          {attachment.fileName}
+        </span>
+        <span className="text-xs">
+          {t("attachments.purged")}
+          {attachment.purgedAt ? (
+            <>
+              <span aria-hidden="true"> · </span>
+              <RelativeTime iso={attachment.purgedAt} />
+            </>
+          ) : null}
+        </span>
+      </span>
+    </div>
+  )
+}
+
+/**
+ * Attachments of one message (or of the opening description). Renders nothing when empty.
+ * Live files keep their type groups (thumbnails, players, file rows); purged ones follow as
+ * one compact group of placeholders, so a removed video never holds a 16:9 box.
+ */
 const TicketAttachments = ({
   ticketId,
   attachments,
@@ -275,11 +311,11 @@ const TicketAttachments = ({
 }) => {
   const { t } = useTranslation("tickets")
   if (!attachments?.length) return null
-  const images = attachments.filter((attachment) => isImageMime(attachment.mimeType))
-  const videos = attachments.filter((attachment) => isVideoMime(attachment.mimeType))
-  const files = attachments.filter(
-    (attachment) => !isImageMime(attachment.mimeType) && !isVideoMime(attachment.mimeType),
-  )
+  const live = attachments.filter((attachment) => !isPurgedAttachment(attachment))
+  const purged = attachments.filter(isPurgedAttachment)
+  const images = live.filter((attachment) => isImageMime(attachment.mimeType))
+  const videos = live.filter((attachment) => isVideoMime(attachment.mimeType))
+  const files = live.filter((attachment) => !isImageMime(attachment.mimeType) && !isVideoMime(attachment.mimeType))
 
   return (
     <div
@@ -310,6 +346,15 @@ const TicketAttachments = ({
           {files.map((attachment) => (
             <li key={attachment.id} className="max-w-full">
               <FileRow ticketId={ticketId} attachment={attachment} />
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      {purged.length ? (
+        <ul className="flex flex-wrap gap-2">
+          {purged.map((attachment) => (
+            <li key={attachment.id} className="max-w-full">
+              <PurgedTile attachment={attachment} />
             </li>
           ))}
         </ul>
