@@ -1,6 +1,10 @@
 # Cloudflare Workers static assets (same shape as open-office-fe). No custom domain yet:
-# `bun run deploy` publishes to the default *.workers.dev subdomain; add a route here once a domain exists.
-name = "ticket-hub"
+# deploys go to the default *.workers.dev subdomain; add a route here once a domain exists.
+#
+# Workers Builds (git integration, repo nctuanit/aioffice_ticket): the Worker in the dashboard must be
+# named exactly like `name` below. Build command `bun run build`, deploy command `npx wrangler deploy`.
+# VITE_API_URL comes from .env.production at build time.
+name = "aioffice-ticket"
 account_id = "e0d71b5b75fe5dcd9fa3464b92c341cc"
 compatibility_date = "2025-07-30"
 workers_dev = true
