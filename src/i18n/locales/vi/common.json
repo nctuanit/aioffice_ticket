@@ -47,5 +47,9 @@
     "enable_notifications": "Bật thông báo trình duyệt",
     "notifications_enabled": "Đã bật thông báo trình duyệt cho ticket mới",
     "notifications_blocked": "Trình duyệt đang chặn thông báo của trang này"
+  },
+  "toasts": {
+    "region": "Thông báo",
+    "close": "Đóng thông báo"
   }
 }

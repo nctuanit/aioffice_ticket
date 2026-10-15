@@ -310,8 +310,12 @@
     "purged": "Đã xóa theo chính sách lưu trữ"
   },
   "realtime": {
-    "new_ticket": "Ticket mới {{number}} — {{subject}}",
+    "title": "Ticket mới · {{number}}",
     "open": "Mở",
+    "open_ticket": "Mở ticket {{number}}",
+    "group_title_other": "{{count}} ticket mới",
+    "more_other": "+{{count}} ticket khác",
+    "view_queue": "Xem hàng đợi",
     "notification_title": "Ticket mới {{number}}"
   },
   "quick_filters": {
@@ -402,7 +406,9 @@
       "assignee_asc": "Người xử lý: A → Z",
       "assignee_desc": "Người xử lý: Z → A",
       "updatedAt_desc": "Cập nhật mới nhất trước",
-      "updatedAt_asc": "Cập nhật cũ nhất trước"
+      "updatedAt_asc": "Cập nhật cũ nhất trước",
+      "deadline_asc": "Hạn tiếp nhận gần nhất trước",
+      "deadline_desc": "Hạn tiếp nhận xa nhất trước"
     }
   }
 }

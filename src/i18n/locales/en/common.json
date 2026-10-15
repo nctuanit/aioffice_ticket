@@ -47,5 +47,9 @@
     "enable_notifications": "Enable browser notifications",
     "notifications_enabled": "Browser notifications are on for new tickets",
     "notifications_blocked": "The browser is blocking notifications for this site"
+  },
+  "toasts": {
+    "region": "Notifications",
+    "close": "Close notification"
   }
 }

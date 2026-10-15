@@ -317,8 +317,14 @@
     "purged": "Deleted under the retention policy"
   },
   "realtime": {
-    "new_ticket": "New ticket {{number}} — {{subject}}",
+    "title": "New ticket · {{number}}",
     "open": "Open",
+    "open_ticket": "Open ticket {{number}}",
+    "group_title_one": "{{count}} new ticket",
+    "group_title_other": "{{count}} new tickets",
+    "more_one": "+{{count}} more",
+    "more_other": "+{{count}} more",
+    "view_queue": "View queue",
     "notification_title": "New ticket {{number}}"
   },
   "quick_filters": {
@@ -409,7 +415,9 @@
       "assignee_asc": "Assignee: A → Z",
       "assignee_desc": "Assignee: Z → A",
       "updatedAt_desc": "Recently updated first",
-      "updatedAt_asc": "Least recently updated first"
+      "updatedAt_asc": "Least recently updated first",
+      "deadline_asc": "Nearest acceptance deadline first",
+      "deadline_desc": "Furthest acceptance deadline first"
     }
   }
 }

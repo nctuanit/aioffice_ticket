@@ -46,14 +46,19 @@ class HttpStatusError extends Error {
   }
 }
 
+/** Resolves after `ms` or on abort; the abort listener is removed either way (the signal lives for the session). */
 const sleep = (ms: number, signal: AbortSignal) =>
   new Promise<void>((resolve) => {
     if (signal.aborted) return resolve()
-    const timer = setTimeout(resolve, ms)
-    signal.addEventListener("abort", () => {
+    const onAbort = () => {
       clearTimeout(timer)
       resolve()
-    })
+    }
+    const timer = setTimeout(() => {
+      signal.removeEventListener("abort", onAbort)
+      resolve()
+    }, ms)
+    signal.addEventListener("abort", onAbort, { once: true })
   })
 
 /** Exponential backoff with jitter: ~1s, 2s, 4s … capped at 30s. */
