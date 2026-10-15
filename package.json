@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "packageManager": "bun@1.4.3",
   "description": "Ticket Hub — web xử lý ticket hỗ trợ cho đội support/admin của AI SUPER OFFICE (backend open-office).",
   "scripts": {
     "dev": "vite",
