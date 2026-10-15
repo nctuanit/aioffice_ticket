@@ -30,7 +30,10 @@ const ticketListSearchSchema = z.object({
    * it narrows the tickets already loaded on screen and is never sent to the backend.
    */
   replied: z.boolean().optional().catch(undefined),
-  /** List sort; absent → priority high → low (see `resolveTicketSort`). */
+  /**
+   * List sort; absent → newest ticket first, or nearest intake deadline first in the "Sắp hết hạn"
+   * view (see `resolveTicketSort`).
+   */
   sort: z.enum(TICKET_SORT_FIELDS).optional().catch(undefined),
   order: z.enum(SORT_DIRECTIONS).optional().catch(undefined),
 })

@@ -16,9 +16,8 @@ import { ExpiryCountdown, RelativeTime, UserAvatar } from "@/features/tickets/co
 import type { Ticket } from "@/features/tickets/types/ticket.types"
 import { customerReplied } from "@/features/tickets/utils/ticket-signals"
 import {
+  COLUMN_SORT_OPTIONS,
   nextTicketSort,
-  SORT_DIRECTIONS,
-  TICKET_SORT_FIELDS,
   type TicketSort,
   type TicketSortField,
 } from "@/features/tickets/utils/ticket-sort"
@@ -87,9 +86,15 @@ const SortableHeader = ({
   )
 }
 
-/** Phones have no table header: the same sort as a native select above the cards. */
+/**
+ * Phones have no table header: the same sort as a native select above the cards. A sort
+ * without a column (nearest deadline, the "Sắp hết hạn" default) is listed only while it applies.
+ */
 const MobileSortSelect = ({ sort, onSort }: SortProps) => {
   const { t } = useTranslation("tickets")
+  const options = COLUMN_SORT_OPTIONS.some((option) => option.field === sort.field)
+    ? COLUMN_SORT_OPTIONS
+    : [sort, ...COLUMN_SORT_OPTIONS]
   return (
     <label className="flex items-center gap-2 text-sm text-muted-foreground md:hidden">
       <span className="shrink-0">{t("sort.label")}</span>
@@ -101,13 +106,11 @@ const MobileSortSelect = ({ sort, onSort }: SortProps) => {
           onSort({ field, order })
         }}
       >
-        {TICKET_SORT_FIELDS.flatMap((field) =>
-          SORT_DIRECTIONS.map((order) => (
-            <option key={`${field}:${order}`} value={`${field}:${order}`}>
-              {t(`sort.options.${field}_${order}`)}
-            </option>
-          )),
-        )}
+        {options.map(({ field, order }) => (
+          <option key={`${field}:${order}`} value={`${field}:${order}`}>
+            {t(`sort.options.${field}_${order}`)}
+          </option>
+        ))}
       </NativeSelect>
     </label>
   )
@@ -117,7 +120,8 @@ const MobileSortSelect = ({ sort, onSort }: SortProps) => {
  * Queue table (≥ md) and stacked cards (< md). Rows stay links to the detail page so
  * keyboard and middle-click work; the subject is the accessible link text. Column
  * headers (select on phones) change the server-side sort; the "Ticket" column sorts by
- * creation time, which is also ticket-number order.
+ * creation time, which is also ticket-number order (newest first by default). The
+ * nearest-deadline order of the "Sắp hết hạn" view has no column, so no header shows as active.
  */
 const TicketTable = ({ tickets, sort, onSort }: { tickets: Ticket[] } & SortProps) => {
   const { t } = useTranslation("tickets")

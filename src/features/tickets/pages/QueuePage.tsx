@@ -152,7 +152,7 @@ const TicketListView = ({ search, onPage, onFilters }: TicketListViewProps) => {
       <TicketTable
         tickets={tickets}
         sort={sort}
-        onSort={(next) => onFilters(ticketSortPatch(next))}
+        onSort={(next) => onFilters(ticketSortPatch(next, search))}
       />
       {pagination}
     </div>

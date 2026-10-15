@@ -82,7 +82,9 @@ const useBoardColumns = (filters: TicketBoardFilters, paused: boolean): BoardCol
           ...filters,
           status,
           limit: BOARD_COLUMN_LIMIT,
-          // Active columns: highest priority on top. Closed: most recently closed first.
+          // Active columns: newest ticket first (the queue default). Closed: no `sortBy`, so the API's
+          // deadline-then-latest-update order applies; closed tickets have no deadline, so that is
+          // most recently closed first.
           ...(status === "CLOSED" ? { sortOrder: "DESC" as const } : toApiSort(DEFAULT_TICKET_SORT)),
         }),
       refetchInterval: paused ? (false as const) : refetchInterval,

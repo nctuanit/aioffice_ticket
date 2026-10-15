@@ -3,6 +3,7 @@ import { AlarmClock, Check, Eye, MessageCircleReply, UserRound, UserX } from "lu
 import { useTranslation } from "react-i18next"
 
 import type { FilterPatch, TicketListSearch } from "@/features/tickets/types/ticket-search"
+import { isExpiringPreset } from "@/features/tickets/utils/ticket-sort"
 import { cn } from "@/lib/utils"
 
 type QuickFilter = {
@@ -19,8 +20,9 @@ type QuickFilter = {
 
 /**
  * One-click presets over the URL filters. Each toggles only its own keys, so they combine
- * with each other and with the selects in the filter popover. "Expiring soon" relies on the
- * API's default sort (nearest deadline first).
+ * with each other and with the selects in the filter popover. "Expiring soon" also drops any
+ * explicit sort when switched on: its default order is nearest intake deadline first (see
+ * `defaultTicketSort`), and a sort picked afterwards stays in the URL as usual.
  */
 const QUICK_FILTERS: QuickFilter[] = [
   {
@@ -48,8 +50,8 @@ const QUICK_FILTERS: QuickFilter[] = [
     key: "expiring",
     icon: AlarmClock,
     listOnly: true,
-    isActive: (search) => search.status === "OPEN" && search.assignee === "none",
-    on: { status: "OPEN", assignee: "none" },
+    isActive: isExpiringPreset,
+    on: { status: "OPEN", assignee: "none", sort: undefined, order: undefined },
     off: { status: undefined, assignee: undefined },
   },
   {
