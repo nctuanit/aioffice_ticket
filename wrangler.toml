@@ -1,5 +1,6 @@
-# Cloudflare Workers static assets (same shape as open-office-fe). No custom domain yet:
-# deploys go to the default *.workers.dev subdomain; add a route here once a domain exists.
+# Cloudflare Workers static assets (same shape as open-office-fe).
+# Public address: https://support.aisuperoffice12.com (custom domain below). That origin must be listed
+# in the backend's AUTH_COOKIE_ALLOWED_ORIGINS, otherwise every API call is blocked by CORS.
 #
 # Workers Builds (git integration, repo nctuanit/aioffice_ticket): the Worker in the dashboard must be
 # named exactly like `name` below. Build command `bun run build`, deploy command `npx wrangler deploy`.
@@ -8,6 +9,9 @@ name = "aioffice-ticket"
 account_id = "e0d71b5b75fe5dcd9fa3464b92c341cc"
 compatibility_date = "2025-07-30"
 workers_dev = true
+routes = [
+  { pattern = "support.aisuperoffice12.com", custom_domain = true }
+]
 
 [assets]
 directory = "./dist"
