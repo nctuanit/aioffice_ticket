@@ -1,5 +1,5 @@
 # Cloudflare Workers static assets (same shape as open-office-fe).
-# Public address: https://support.aisuperoffice12.com (custom domain below). That origin must be listed
+# Public address: https://support.superoffice12.com (custom domain below). That origin must be listed
 # in the backend's AUTH_COOKIE_ALLOWED_ORIGINS, otherwise every API call is blocked by CORS.
 #
 # Workers Builds (git integration, repo nctuanit/aioffice_ticket): the Worker in the dashboard must be
@@ -10,6 +10,7 @@ account_id = "e0d71b5b75fe5dcd9fa3464b92c341cc"
 compatibility_date = "2025-07-30"
 workers_dev = true
 routes = [
+  { pattern = "support.superoffice12.com", custom_domain = true },
   { pattern = "support.aisuperoffice12.com", custom_domain = true }
 ]
 
